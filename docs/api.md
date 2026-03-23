@@ -20,10 +20,10 @@
     - [\[POST\] /Transaction/Single/Add](#post-transactionsingleadd)
     - [\[PUT\] /Transaction/Single/Update](#put-transactionsingleupdate)
     - [\[DELETE\] /Transaction/Single/Delete](#delete-transactionsingledelete)
-  - [Reoccurring Transactions](#reoccurring-transactions)
-    - [\[POST\] /Transaction/Reoccurring/Add](#post-transactionreoccurringadd)
-    - [\[PUT\] /Transaction/Reoccurring/Update](#put-transactionreoccurringupdate)
-    - [\[DELETE\] /Transaction/Reoccurring/Delete](#delete-transactionreoccurringdelete)
+  - [Recurring Transactions](#recurring-transactions)
+    - [\[POST\] /Transaction/Recurring/Add](#post-transactionrecurringadd)
+    - [\[PUT\] /Transaction/Recurring/Update](#put-transactionrecurringupdate)
+    - [\[DELETE\] /Transaction/Recurring/Delete](#delete-transactionrecurringdelete)
   - [Transaction Queries](#transaction-queries)
     - [\[GET\] /Transaction/GetAll](#get-transactiongetall)
     - [\[GET\] Transaction/Average/ByPeriod](#get-transactionaveragebyperiod)
@@ -244,7 +244,7 @@ Responses:
 
 ### \[DELETE\] /Transaction/Single/Delete
 
-Deletes a non-reoccurring transaction.
+Deletes a non-recurring transaction.
 
 Header:
 
@@ -256,11 +256,11 @@ Responses:
 - Not Found (404)
 - Unauthorized (401)
 
-## Reoccurring Transactions
+## Recurring Transactions
 
-### \[POST\] /Transaction/Reoccurring/Add
+### \[POST\] /Transaction/Recurring/Add
 
-Adds a reoccurring transaction.
+Adds a recurring transaction.
 
 Header:
 
@@ -277,9 +277,9 @@ Responses:
 - Created (201)
 - Unauthorized (401)
 
-### \[PUT\] /Transaction/Reoccurring/Update
+### \[PUT\] /Transaction/Recurring/Update
 
-Updates a reoccurring transaction.
+Updates a recurring transaction.
 
 Header:
 
@@ -298,9 +298,9 @@ Responses:
 - Not Found (404)
 - Unauthorized (401)
 
-### \[DELETE\] /Transaction/Reoccurring/Delete
+### \[DELETE\] /Transaction/Recurring/Delete
 
-Deletes a reoccurring transaction.
+Deletes a recurring transaction.
 
 Header:
 
@@ -347,7 +347,7 @@ Output:
 ### \[GET\] Transaction/Average/ByPeriod
 
 Get the current average transactions for a period type. \
-Reoccurring transactions are listed individually. Single transactions are averaged, grouped by type.
+Recurring transactions are listed individually. Single transactions are averaged, grouped by type.
 
 Header:
 
@@ -361,14 +361,14 @@ Responses:
   - List:
     - Category
     - Name
-      - Either name of reoccurring transaction or type name for averaged single transactions
+      - Either name of recurring transaction or type name for averaged single transactions
     - Amount
 - Unauthorized (401)
 
 ### \[GET\] Transactions/Average/ByDateRange
 
 Get the current average transactions for a date range. \
-Reoccurring transactions are listed individually. Single transactions are averaged, grouped by type.
+Recurring transactions are listed individually. Single transactions are averaged, grouped by type.
 
 Header:
 
@@ -381,6 +381,6 @@ Responses:
   - List:
     - Category
     - Name
-      - Either name of reoccurring transaction or type name for averaged single transactions
+      - Either name of recurring transaction or type name for averaged single transactions
     - Amount
 - Unauthorized (401)

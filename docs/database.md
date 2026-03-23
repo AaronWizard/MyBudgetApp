@@ -34,14 +34,14 @@ The system transaction types are:
 - Utilities
 - Entertainment
 
-The **TransactionCategory** table contains user-custom categories for different transactions. Categories may be used by both single transactions and reoccurring transactions. Unlike types, categories are optional, may be deleted, and there are no system-defined categories. Deleting a category sets the categories of related transactions to null.
+The **TransactionCategory** table contains user-custom categories for different transactions. Categories may be used by both single transactions and recurring transactions. Unlike types, categories are optional, may be deleted, and there are no system-defined categories. Deleting a category sets the categories of related transactions to null.
 
 - TransactionCategory
   - Id (int)
   - UserId (int) *(Users/Id)*
   - Name (string)
 
-The *SingleTransaction* table represents a single non-reoccurring payment or expense.
+The *SingleTransaction* table represents a single non-recurring payment or expense.
 
 - SingleTransaction
   - Id (int)
@@ -49,12 +49,12 @@ The *SingleTransaction* table represents a single non-reoccurring payment or exp
   - TypeId (int) *(TransactionType/Id)*
   - Amount (decimal)
   - TransactionDateUTC (DateTime)
-  - CategoryId (int?) *(Category/Id)*
+  - CategoryId (int?) *(TransactionCategory/Id)*
   - CreatedDateUTC (DateTime)
   - UpdatedDateUTC (DateTime?)
   - DeletedDateUTC (DateTime?)
 
-The *TransactionPeriod* table is an enum table for categorizing types of time periods for reoccurring transactions.
+The *TransactionPeriod* table is an enum table for categorizing types of time periods for recurring transactions.
 
 - TransactionPeriod *(lookup)*
   - Id (int)
@@ -66,9 +66,9 @@ The possible records in TransactionPeriod are:
 - Yearly
 - Biweekly
 
-The *ReoccurringTransaction* table represents reoccurring transactions. They include information on how often they occur represented by their period type (monthly, yearly, etc.) and how often they occur in that period (e.g. once a month vs twice a month). They do not have a transaction type ID like single transactions do; logically a reoccurring transaction represents multiple single transactions of the same type. Duplicate names are not allowed among a user's active reoccurring transactions.
+The *RecurringTransaction* table represents recurring transactions. They include information on how often they occur represented by their period type (monthly, yearly, etc.) and how often they occur in that period (e.g. once a month vs twice a month). They do not have a transaction type ID like single transactions do; logically a recurring transaction represents multiple single transactions of the same type. Duplicate names are not allowed among a user's active recurring transactions.
 
-- ReoccurringTransaction
+- RecurringTransaction
   - Id (int)
   - UserId (int) *(Users/Id)*
   - Name (string)
