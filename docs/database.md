@@ -101,7 +101,7 @@ Recurring transactions do not have types like single transactions do. The Name f
   - Amount (decimal)
   - PeriodId (int) *(TransactionPeriod/Id)*
   - TimesPerPeriod (int)
-  - CategoryId (int?) *(Category/Id)*
+  - CategoryId (int?) *(TransactionCategory/Id)*
   - StartDateUTC (DateTime)
   - EndDateUTC (DateTime?)
   - CreatedDateUTC (DateTime)
