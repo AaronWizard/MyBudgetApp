@@ -3,8 +3,15 @@
 - [General Notes](#general-notes)
 - [Users](#users)
   - [\[POST\] /User/Register](#post-userregister)
-  - [\[PUT\] /User/Verify](#put-userverify)
+  - [\[POST\] /User/Register/Verify](#post-userregisterverify)
+  - [\[POST\] /User/Register/Verify/Resend](#post-userregisterverifyresend)
   - [\[POST\] /User/Login](#post-userlogin)
+  - [\[POST\] /User/Login/Verify](#post-userloginverify)
+  - [\[POST\] /User/Logout](#post-userlogout)
+  - [\[POST\] /User/Password/Change](#post-userpasswordchange)
+  - [\[POST\] /User/Password/Forgot](#post-userpasswordforgot)
+  - [\[POST\] /User/Password/Reset](#post-userpasswordreset)
+  - [\[POST\] /User/RefreshAccess](#post-userrefreshaccess)
 - [Transaction Types](#transaction-types)
   - [\[GET\] /Type/GetAll](#get-typegetall)
   - [\[POST\] /Type/Add](#post-typeadd)
@@ -30,46 +37,64 @@
 
 ## General Notes
 
-All methods require a JWT token other than the user registration, verification, and login methods.
+- The API is implemented in ASP.NET Core.
+- Most methods require a JWT bearer access token.
 
 ## Users
 
 ### \[POST\] /User/Register
 
-Register a new user. \
-Emails must be unique.
+Register a new user. An email is sent to the provided email address for verification, containing a one-time verification token that lasts for a set amount of time. \
+Response is intentionally vague to avoid revealing whether an email is taken or not.
 
-Header:
+Request:
 
 - Email (string)
 - Password (string)
 
 Responses:
 
-- Created (201)
-  - Token (string)
-- Bad Request (400)
+- Accepted (202)
 
-### \[PUT\] /User/Verify
+*Does not require a bearer access token.*
 
-Verifies a user.
+### \[POST\] /User/Register/Verify
 
-Header:
+Verifies a user's registration. Used through a verification link in an email. \
+The user is logged in after a successful registration. The verification may fail if the verification token expired; the user may request a new verification email.
 
-- Token (string)
+Request:
+
+- RegistrationToken (string)
 
 Responses:
 
 - OK (200)
-  - Token (string)
-- Not Found (404)
+  - AccessToken (string)
 - Bad Request (400)
+
+*Does not require a bearer access token.*
+
+### \[POST\] /User/Register/Verify/Resend
+
+Requests a new verification email. \
+Response is intentionally vague to avoid revealing whether an email is taken or not.
+
+Request:
+
+- Email (string)
+
+Response:
+
+- Accepted (202)
+
+*Does not require a bearer access token.*
 
 ### \[POST\] /User/Login
 
-Login a user
+Starts logging in a user. Creates a 2FA code sent to the user's email address, and a login token used by */User/Login/Verify*.
 
-Header:
+Request:
 
 - Email (string)
 - Password (string)
@@ -77,8 +102,86 @@ Header:
 Responses:
 
 - OK (200)
-  - Token (string)
-- Bad Request (400)
+  - LoginToken (string)
+
+*Does not require a bearer access token.*
+
+### \[POST\] /User/Login/Verify
+
+Completes the 2FA login.
+
+Request:
+
+- LoginToken (string)
+- LoginCode (string)
+
+Responses:
+
+- OK (200)
+  - AccessToken (string)
+
+*Does not require a bearer access token.*
+
+### \[POST\] /User/Logout
+
+Logs the user out.
+
+Responses:
+
+- No Content (204)
+
+### \[POST\] /User/Password/Change
+
+Changes the (logged in) user's password.
+
+Request:
+
+- CurrentPassword (string)
+- NewPassword (string)
+
+Responses:
+
+- No Content (204)
+
+### \[POST\] /User/Password/Forgot
+
+Allows the user to reset their password. A reset link is sent to their email. A reset token is created and kept for a set amount of time.
+
+Request:
+
+- Email (string)
+
+Response:
+
+- Accepted (202)
+
+*Does not require a bearer access token.*
+
+### \[POST\] /User/Password/Reset
+
+Completes the password reset process.
+
+Request:
+
+- ResetToken (string)
+- NewPassword (string)
+
+Response:
+
+- No Content (204)
+
+*Does not require a bearer access token.*
+
+### \[POST\] /User/RefreshAccess
+
+Refreshes the user's access token (which only lasts 15 minutes). Periodically called by the front end, e.g. when another API method returns *Unauthorized*.
+
+Response:
+
+- OK (200)
+  - AccessToken (string)
+
+*Does not require a bearer access token.*
 
 ## Transaction Types
 
@@ -87,7 +190,7 @@ Responses:
 Gets the user's transaction types. \
 The response value *InUse* is true for a type if it's assigned to any transactions.
 
-Header: None
+Request: None
 
 Responses:
 
@@ -103,7 +206,7 @@ Responses:
 Adds a user transaction type. \
 Names must be unique.
 
-Header:
+Request:
 
 - Name (string)
 
@@ -118,7 +221,7 @@ Responses:
 Edits a user transaction type. \
 Names must be unique.
 
-Header:
+Request:
 
 - Id (int)
 - Name (string)
@@ -135,7 +238,7 @@ Responses:
 Deletes a user type. \
 A type may not be deleted if it's assigned to any transactions.
 
-Header:
+Request:
 
 - Id (int)
 
@@ -152,7 +255,7 @@ Responses:
 
 Gets the user's transaction categories.
 
-Header: None
+Request: None
 
 Responses:
 
@@ -166,7 +269,7 @@ Responses:
 
 Adds a user transaction category.
 
-Header:
+Request:
 
 - Name (string)
 
@@ -180,7 +283,7 @@ Responses:
 
 Edits a user transaction category.
 
-Header:
+Request:
 
 - Id (int)
 - Name (string)
@@ -195,7 +298,7 @@ Responses:
 
 Deletes a user category.
 
-Header:
+Request:
 
 - Id (int)
 
@@ -211,7 +314,7 @@ Responses:
 
 Adds a single transaction.
 
-Header:
+Request:
 
 - TypeId (int)
 - Amount (decimal)
@@ -227,7 +330,7 @@ Responses:
 
 Updates a single transaction.
 
-Header:
+Request:
 
 - Id (int)
 - TypeId (int)
@@ -245,7 +348,7 @@ Responses:
 
 Deletes a non-recurring transaction.
 
-Header:
+Request:
 
 - Id (int)
 
@@ -261,7 +364,7 @@ Responses:
 
 Adds a recurring transaction.
 
-Header:
+Request:
 
 - Name (string)
 - Amount (decimal)
@@ -280,7 +383,7 @@ Responses:
 
 Updates a recurring transaction.
 
-Header:
+Request:
 
 - Id (int)
 - Name (string)
@@ -301,7 +404,7 @@ Responses:
 
 Deletes a recurring transaction.
 
-Header:
+Request:
 
 - Id (int)
 
@@ -317,7 +420,7 @@ Responses:
 
 Get all transactions. Can filter using date range.
 
-Header:
+Request:
 
 - StartDateUTC (DateTime?)
 - EndDateUTC (DateTime?)
@@ -348,7 +451,7 @@ Output:
 Get the current average transactions for a period type. \
 Recurring transactions are listed individually. Single transactions are averaged, grouped by type.
 
-Header:
+Request:
 
 - PeriodType (enum)
   - Month
@@ -369,7 +472,7 @@ Responses:
 Get the current average transactions for a date range. \
 Recurring transactions are listed individually. Single transactions are averaged, grouped by type.
 
-Header:
+Request:
 
 - StartDate (DateTime)
 - EndDate (DateTime?)
