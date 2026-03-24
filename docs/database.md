@@ -7,8 +7,8 @@
   - [VerifyLoginCodes](#verifylogincodes)
   - [PasswordResetToken](#passwordresettoken)
   - [RefreshToken](#refreshtoken)
-  - [TransactionType](#transactiontype)
   - [TransactionCategory](#transactioncategory)
+  - [TransactionType](#transactiontype)
   - [SingleTransaction](#singletransaction)
   - [RecurringTransaction](#recurringtransaction)
 
@@ -83,6 +83,18 @@ Keeps track of the user's refresh tokens for each active session. Used to check 
   - ExpiryDateUTC (DateTime)
   - RevocationDateUTC (DateTime?)
 
+### TransactionCategory
+
+Contains user-custom categories for different transactions. Categories may be used by both single transactions and recurring transactions. Unlike types, categories are optional and there are no system-defined categories.
+
+- TransactionCategory
+  - Id (int)
+  - UserId (int) *(Users/Id)*
+  - Name (string)
+  - CreatedDateUTC (DateTime)
+  - UpdatedDateUTC (DateTime?)
+  - DeletedDateUTC (DateTime?)
+
 ### TransactionType
 
 Contains the types for single transactions. The application comes with a set of default system types while the user may add their own types; user types have a non-null *UserId* value. A transaction type may not be deleted if it's assigned to a transaction. Transaction types are soft deleted to preserve data integrity with deleted transactions.
@@ -102,18 +114,6 @@ The system transaction types are:
 - Groceries
 - Utilities
 - Entertainment
-
-### TransactionCategory
-
-Contains user-custom categories for different transactions. Categories may be used by both single transactions and recurring transactions. Unlike types, categories are optional and there are no system-defined categories.
-
-- TransactionCategory
-  - Id (int)
-  - UserId (int) *(Users/Id)*
-  - Name (string)
-  - CreatedDateUTC (DateTime)
-  - UpdatedDateUTC (DateTime?)
-  - DeletedDateUTC (DateTime?)
 
 ### SingleTransaction
 
