@@ -8,9 +8,14 @@
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {}
 	},
-	"postCreateCommand": "npm install -g @angular/cli@21"
-	// Configure tool-specific properties.
-	// "customizations": {},
+	"postCreateCommand": "npm install -g @angular/cli@21",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"Angular.ng-template"
+			]
+		}
+	}
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [5000, 5001, 5432],
 	// "portsAttributes": {
