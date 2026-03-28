@@ -6,9 +6,14 @@
 	"service": "app",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	"features": {
-		"ghcr.io/devcontainers/features/node:1": {}
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "24.14.1"
+		}
 	},
-	"postCreateCommand": "npm install -g @angular/cli@21",
+	"postCreateCommand": {
+		"angular": "npm install -g @angular/cli@21",
+		"devCerts": "dotnet dev-certs https"
+	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
