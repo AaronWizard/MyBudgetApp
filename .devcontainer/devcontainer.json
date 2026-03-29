@@ -1,19 +1,16 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/dotnet-postgres
 {
 	"name": "My Budget App",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "app",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	"features": {
-		"ghcr.io/devcontainers/features/node:1": {
-			"version": "24.14.1"
-		}
+		"ghcr.io/devcontainers/features/node:1": {}
 	},
-	"postCreateCommand": {
-		"angular": "npm install -g @angular/cli@21",
-		"devCerts": "dotnet dev-certs https"
-	},
+	"forwardPorts": [
+		5000,
+		4200,
+		5432
+	],
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -22,13 +19,4 @@
 			]
 		}
 	}
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [5000, 5001, 5432],
-	// "portsAttributes": {
-	//		"5001": {
-	//			"protocol": "https"
-	//		}
-	// }
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
 }
