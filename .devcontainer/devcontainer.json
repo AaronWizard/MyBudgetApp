@@ -7,14 +7,16 @@
 		"ghcr.io/devcontainers/features/node:1": {}
 	},
 	"forwardPorts": [
-		5000,
-		4200,
-		5432
+		5000, /* API (ASP.NET Core) */
+		4200, /* Front end (Angular) */
+		5432 /* Database (PostgreSQL) */
 	],
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"Angular.ng-template",
+				/* Using v2.10.3 as workaround for:
+				 * https://github.com/microsoft/vscode-dotnettools/issues/2759#issuecomment-4156595545 */
 				"ms-dotnettools.csdevkit@2.10.3"
 			]
 		}
