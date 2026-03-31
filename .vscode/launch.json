@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "MyBudgetApp.API [http]",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/API/MyBudgetApp.API/MyBudgetApp.API.csproj",
+            "launchConfigurationId": "TargetFramework=;http"
+        }
+    ]
+}
