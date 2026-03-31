@@ -15,7 +15,7 @@
 		"vscode": {
 			"extensions": [
 				"Angular.ng-template",
-				"ms-dotnettools.csdevkit"
+				"ms-dotnettools.csdevkit@2.10.3"
 			]
 		}
 	}
