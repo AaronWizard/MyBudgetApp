@@ -26,6 +26,7 @@
 				"yzhang.markdown-all-in-one"
 			],
 			"settings": {
+				"docker.extension.dockerEngineAvailabilityPrompt": false,
 				"extensions.autoUpdate": false,
 				"extensions.autoCheckUpdates": false,
 				"pgsql.serverGroups": [
