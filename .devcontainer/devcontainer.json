@@ -19,12 +19,42 @@
 				/* Using v2.10.3 as workaround for:
 				 * https://github.com/microsoft/vscode-dotnettools/issues/2759#issuecomment-4156595545 */
 				"ms-dotnettools.csdevkit@2.10.3",
+				"ms-ossdata.vscode-pgsql",
 				"streetsidesoftware.code-spell-checker",
 				"yzhang.markdown-all-in-one"
 			],
 			"settings": {
 				"extensions.autoUpdate": false,
-				"extensions.autoCheckUpdates": false
+				"extensions.autoCheckUpdates": false,
+				"pgsql.serverGroups": [
+					{
+						"name": "Servers",
+						"id": "DFE79120-1DE3-442D-BB71-37ED6C573EC1",
+						"isDefault": true
+					}
+				],
+				"pgsql.connections": [
+					{
+						"id": "83B7C2CD-F9FF-4966-AD96-C104FDE05514",
+						"groupId": "DFE79120-1DE3-442D-BB71-37ED6C573EC1",
+						"authenticationType": "SqlLogin",
+						"connectTimeout": 15,
+						"applicationName": "My Budget App",
+						"clientEncoding": "utf8",
+						"sslmode": "disable",
+						"sshSavePassword": true,
+						"savePassword": true,
+						"sslRootCertMode": "none",
+						"server": "db",
+						"user": "postgres",
+						"password": "postgres",
+						"database": "appdb",
+						"profileName": "Local DB",
+						"port": "5432",
+						"expiresOn": 0,
+						"sshPassword": ""
+					}
+				]
 			}
 		}
 	}
