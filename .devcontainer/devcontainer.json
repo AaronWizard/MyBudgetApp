@@ -21,7 +21,11 @@
 				"ms-dotnettools.csdevkit@2.10.3",
 				"streetsidesoftware.code-spell-checker",
 				"yzhang.markdown-all-in-one"
-			]
+			],
+			"settings": {
+				"extensions.autoUpdate": false,
+				"extensions.autoCheckUpdates": false
+			}
 		}
 	}
 }
