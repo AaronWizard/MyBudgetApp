@@ -15,9 +15,12 @@
 		"vscode": {
 			"extensions": [
 				"Angular.ng-template",
+				"DavidAnson.vscode-markdownlint",
 				/* Using v2.10.3 as workaround for:
 				 * https://github.com/microsoft/vscode-dotnettools/issues/2759#issuecomment-4156595545 */
-				"ms-dotnettools.csdevkit@2.10.3"
+				"ms-dotnettools.csdevkit@2.10.3",
+				"streetsidesoftware.code-spell-checker",
+				"yzhang.markdown-all-in-one"
 			]
 		}
 	}

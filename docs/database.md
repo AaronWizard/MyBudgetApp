@@ -8,7 +8,7 @@
   - [PasswordResetToken](#passwordresettoken)
   - [RefreshToken](#refreshtoken)
   - [TransactionCategory](#transactioncategory)
-  - [TransactionType](#transactiontype)
+  - [SingleTransactionType](#singletransactiontype)
   - [SingleTransaction](#singletransaction)
   - [RecurringTransaction](#recurringtransaction)
 
@@ -40,7 +40,7 @@ Keeps track of the registration tokens used for verifying user registrations. Re
 - RegistrationToken
   - Id (int)
   - UserId (int) *(Users/Id)*
-  - RegistrationToken (string)
+  - RegistrationTokenHash (string)
   - CreatedDateUTC (DateTime)
   - ExpiryDateUTC (DateTime)
   - UsedAtDateUTC (DateTime?)
@@ -95,13 +95,13 @@ Contains user-custom categories for different transactions. Categories may be us
   - UpdatedDateUTC (DateTime?)
   - DeletedDateUTC (DateTime?)
 
-### TransactionType
+### SingleTransactionType
 
 Contains the types for single transactions. The application comes with a set of default system types while the user may add their own types; user types have a non-null *UserId* value. A transaction type may not be deleted if it's assigned to a transaction. Transaction types are soft deleted to preserve data integrity with deleted transactions.
 
 Duplicate names are not allowed among the system types and a user's active types. [Entity Framework's filter contraints](https://learn.microsoft.com/en-us/ef/core/modeling/indexes?tabs=data-annotations#index-filter) is be used to enforce this.
 
-- TransactionType
+- SingleTransactionType
   - Id (int)
   - UserId (int?) *(Users/Id)*
   - Name (string)
@@ -124,7 +124,7 @@ Represents single, ad-hoc, non-recurring payments or expenses.
 - SingleTransaction
   - Id (int)
   - UserId (int) *(Users/Id)*
-  - TypeId (int) *(TransactionType/Id)*
+  - TypeId (int) *(SingleTransactionType/Id)*
   - Amount (decimal)
   - TransactionDateUTC (DateTime)
   - CategoryId (int?) *(TransactionCategory/Id)*
