@@ -23,11 +23,13 @@
 				"ms-dotnettools.csdevkit@2.10.3",
 				"ms-ossdata.vscode-pgsql",
 				"streetsidesoftware.code-spell-checker",
+				"streetsidesoftware.code-spell-checker-canadian-english",
 				"yzhang.markdown-all-in-one"
 			],
 			"settings": {
 				"extensions.autoUpdate": false,
 				"extensions.autoCheckUpdates": false,
+				"cSpell.language": "en-CA",
 				"pgsql.serverGroups": [
 					{
 						"name": "Servers",
