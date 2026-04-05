@@ -3,31 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MyBudgetApp.API.Data;
+using MyBudgetApp.API.Services.Access;
 using Scalar.AspNetCore;
-
-#region Helper Functions
-
-string GetConfigurationString(WebApplicationBuilder builder, string key)
-{
-    var result = builder.Configuration[key];
-    return result ?? throw new InvalidOperationException(
-        $"Missing configuration key: '{key}'"
-    );
-}
-
-string GetConnectionString(WebApplicationBuilder builder, string key)
-{
-    var result = builder.Configuration.GetConnectionString(key);
-    return result ?? throw new InvalidOperationException(
-        $"Missing connection string: '{key}'"
-    );
-}
-
-#endregion Helper Functions
-
-const string ValidIssuerKey = "Jwt:Issuer";
-const string ValidAudienceKey = "Jwt:Audience";
-const string SigningKeyKey = "Jwt:SigningKey";
 
 const string ConnectionStringKey = "MyBudgetApp";
 
@@ -35,11 +12,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-var issuer = GetConfigurationString(builder, ValidIssuerKey);
-var audience = GetConfigurationString(builder, ValidAudienceKey);
-var signingKey = GetConfigurationString(builder, SigningKeyKey);
+#region JWT Services
 
-var connectionString = GetConnectionString(builder, ConnectionStringKey);
+var jwtOptionsSection = builder.Configuration.GetSection(
+    JwtAccessOptions.JwtOptionsKey);
+
+var jwtOptions = jwtOptionsSection.Get<JwtAccessOptions>()
+    ?? throw new InvalidOperationException(
+        $"Missing {JwtAccessOptions.JwtOptionsKey} configuration section"
+    );
+
+builder.Services.Configure<JwtAccessOptions>(jwtOptionsSection);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -50,17 +33,30 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = issuer,
-            ValidAudience = audience,
+            ValidIssuer = jwtOptions.Issuer,
+            ValidAudience = jwtOptions.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(signingKey)
+                Encoding.UTF8.GetBytes(jwtOptions.SigningKey)
             )
         };
     });
 
+builder.Services.AddScoped<AccessTokenService>();
+
+#endregion JWT Services
+
+#region Database Services
+
+var connectionString = builder.Configuration
+    .GetConnectionString(ConnectionStringKey)
+    ?? throw new InvalidOperationException(
+        $"Missing connection string: '{ConnectionStringKey}'"
+    );
 builder.Services.AddDbContext<AppDbContext>(
     options => options.UseNpgsql(connectionString)
 );
+
+#endregion Database Services
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
