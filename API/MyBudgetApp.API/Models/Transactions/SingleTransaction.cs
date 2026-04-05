@@ -16,6 +16,6 @@ public class SingleTransaction : BaseModel
 
     public DateTime TransactionDateUTC { get; set; }
 
-    public int? CategoryId { get; set; }
+    public int? TransactionCategoryId { get; set; }
     public TransactionCategory? TransactionCategory { get; set; }
 }

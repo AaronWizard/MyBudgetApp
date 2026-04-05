@@ -7,9 +7,9 @@ public class RecurringTransaction : BaseModel
 {
     public enum PeriodType
     {
-        Biweekly = 0,
-        Monthly = 1,
-        Yearly = 2
+        Biweekly = 1,
+        Monthly = 2,
+        Yearly = 3
     }
 
     public int UserId { get; set; }
@@ -20,11 +20,11 @@ public class RecurringTransaction : BaseModel
     [Precision(18, 2)]
     public decimal Amount { get; set; }
 
-    public PeriodType PeriodId { get; set; }
+    public PeriodType PeriodTypeId { get; set; }
 
     public int TimesPerPeriod { get; set; }
 
-    public int? CategoryId { get; set; }
+    public int? TransactionCategoryId { get; set; }
     public TransactionCategory? TransactionCategory { get; set; }
 
     public DateTime StartDateUTC { get; set; }
