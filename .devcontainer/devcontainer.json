@@ -31,6 +31,7 @@
 				"extensions.autoCheckUpdates": false,
 				"cSpell.language": "en-CA",
 				"gitlens.hovers.annotations.over": "annotation",
+				"gitlens.hovers.currentLine.enabled": false,
 				"pgsql.serverGroups": [
 					{
 						"name": "Servers",
