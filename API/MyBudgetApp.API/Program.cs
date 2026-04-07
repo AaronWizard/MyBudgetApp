@@ -25,7 +25,8 @@ builder.Services.AddDbContext<AppDbContext>(
 
 builder.Services.AddIdentityCore<User>()
     .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
+    .AddDefaultTokenProviders()
+    .AddSignInManager();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
