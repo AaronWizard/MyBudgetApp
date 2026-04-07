@@ -1,13 +1,16 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MyBudgetApp.API.Models;
+using MyBudgetApp.API.Services.Access;
 
 namespace MyBudgetApp.API.Controllers.Authentication
 {
     [Route("api")]
     [ApiController]
     public class LoginController(
-        UserManager<User> userManager, SignInManager<User> signInManager
+        UserManager<User> userManager,
+        SignInManager<User> signInManager,
+        AccessTokenService tokenService
     ) : ControllerBase
     {
         public record LoginRequest(string Email, string Password);
@@ -19,14 +22,17 @@ namespace MyBudgetApp.API.Controllers.Authentication
             var user = await userManager.FindByEmailAsync(request.Email);
             if (user is null)
             {
-
+                return Unauthorized();
             }
-
-            var result = await signInManager.CheckPasswordSignInAsync(
-                user, request.Password, false);
-            if (!result.Succeeded)
+            if (!await userManager.IsEmailConfirmedAsync(user))
             {
-
+                return Unauthorized();
+            }
+            var checkPassword = await signInManager.CheckPasswordSignInAsync(
+                user, request.Password, false);
+            if (!checkPassword.Succeeded)
+            {
+                return Unauthorized();
             }
 
             return NotFound();
