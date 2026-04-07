@@ -18,8 +18,11 @@ public class AccessTokenService
     {
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email)
+            new Claim(
+                ClaimTypes.Email,
+                user.Email
+                    ?? throw new InvalidOperationException("User email is null")
+            )
         };
         var key = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(_options.SecretKey)
