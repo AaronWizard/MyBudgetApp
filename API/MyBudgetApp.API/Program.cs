@@ -1,8 +1,10 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MyBudgetApp.API.Data;
+using MyBudgetApp.API.Models;
 using MyBudgetApp.API.Services.Access;
 using Scalar.AspNetCore;
 
@@ -12,7 +14,34 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-#region JWT Services
+var connectionString = builder.Configuration
+    .GetConnectionString(ConnectionStringKey)
+    ?? throw new InvalidOperationException(
+        $"Missing connection string: '{ConnectionStringKey}'"
+    );
+builder.Services.AddDbContext<AppDbContext>(
+    options => options.UseNpgsql(connectionString)
+);
+
+builder.Services.AddIdentityCore<User>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequiredUniqueChars = 1;
+
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+
+    options.User.RequireUniqueEmail = true;
+});
 
 var jwtOptionsSection = builder.Configuration.GetSection(
     JwtAccessOptions.JwtOptionsKey);
@@ -42,21 +71,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddScoped<AccessTokenService>();
-
-#endregion JWT Services
-
-#region Database Services
-
-var connectionString = builder.Configuration
-    .GetConnectionString(ConnectionStringKey)
-    ?? throw new InvalidOperationException(
-        $"Missing connection string: '{ConnectionStringKey}'"
-    );
-builder.Services.AddDbContext<AppDbContext>(
-    options => options.UseNpgsql(connectionString)
-);
-
-#endregion Database Services
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

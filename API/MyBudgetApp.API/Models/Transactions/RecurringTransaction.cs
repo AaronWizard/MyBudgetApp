@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using MyBudgetApp.API.Models.Users;
+using MyBudgetApp.API.Models;
 
 namespace MyBudgetApp.API.Models.Transactions;
 
@@ -12,7 +12,7 @@ public class RecurringTransaction : BaseModel
         Yearly = 3
     }
 
-    public int UserId { get; set; }
+    public required string UserId { get; set; }
     public User User { get; set; } = null!;
 
     public required string Name { get; set; }

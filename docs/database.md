@@ -3,9 +3,6 @@
 - [General notes](#general-notes)
 - [Tables](#tables)
   - [User](#user)
-  - [VerifyRegistrationToken](#verifyregistrationtoken)
-  - [VerifyLoginCodes](#verifylogincodes)
-  - [PasswordResetToken](#passwordresettoken)
   - [RefreshToken](#refreshtoken)
   - [TransactionCategory](#transactioncategory)
   - [SingleTransactionType](#singletransactiontype)
@@ -15,6 +12,7 @@
 ## General notes
 
 - Entity Framework Core is used to build and interface with the database.
+- User logins are handled by ASP.NET Core Identity.
 - C# syntax is used in this document. Type names with a "?" represent nullable fields.
 - Many tables have *CreatedDateUTC*, *UpdatedDateUTC*, and *DeletedDateUTC* fields for auditing purposes. Records with a non-null *DeletedDateUTC* field are considered deleted.
 
@@ -32,44 +30,6 @@ Stores the users of the app, who log in and record their transactions. Users log
   - CreatedDateUTC (DateTime)
   - UpdatedDateUTC (DateTime?)
   - DeletedDateUTC (DateTime?)
-
-### VerifyRegistrationToken
-
-Keeps track of the registration tokens used for verifying user registrations. Resending a verification email creates a new token and invalidates the old one. *UsedAtDateUTC* is set to a non-null value when the token is used (the user verified their registration).
-
-- RegistrationToken
-  - Id (int)
-  - UserId (int) *(Users/Id)*
-  - RegistrationTokenHash (string)
-  - CreatedDateUTC (DateTime)
-  - ExpiryDateUTC (DateTime)
-  - UsedAtDateUTC (DateTime?)
-
-### VerifyLoginCodes
-
-Keeps track of the 2FA codes and login tokens used in user logins.
-
-- VerifyLoginCodes
-  - Id (int)
-  - UserId (int) *(Users/Id)*
-  - LoginCodeHash (string)
-  - LoginTokenHash (string)
-  - FailedAttempts (int)
-  - CreatedDateUTC (DateTime)
-  - ExpiryDateUTC (DateTime)
-  - UsedAtDateUTC (DateTime?)
-
-### PasswordResetToken
-
-Keeps track of the reset tokens used when resetting a password.
-
-- PasswordResetToken
-  - Id (int)
-  - UserId (int) *(Users/Id)*
-  - ResetTokenHash (string)
-  - CreatedDateUTC (DateTime)
-  - ExpiryDateUTC (DateTime)
-  - UsedAtDateUTC (DateTime?)
 
 ### RefreshToken
 

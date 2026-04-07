@@ -1,7 +1,6 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MyBudgetApp.API.Controllers.User
+namespace MyBudgetApp.API.Controllers.Authentication
 {
     [Route("api/refresh-access")]
     [ApiController]
