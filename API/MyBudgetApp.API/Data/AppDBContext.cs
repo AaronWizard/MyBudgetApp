@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MyBudgetApp.API.Models.Transactions;
 using MyBudgetApp.API.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace MyBudgetApp.API.Data;
 
@@ -39,46 +40,37 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     {
         foreach (var entity in builder.Model.GetEntityTypes())
         {
-            entity.SetTableName(ToSnakeCase(entity.GetTableName()));
+            entity.SetTableName(CamelCaseToSnakeCase(entity.GetTableName()));
 
             foreach (var property in entity.GetProperties())
             {
-                property.SetColumnName(ToSnakeCase(property.GetColumnName()));
+                property.SetColumnName(CamelCaseToSnakeCase(property.GetColumnName()));
             }
             foreach (var key in entity.GetKeys())
             {
-                key.SetName(ToSnakeCase(key.GetName()));
+                key.SetName(CamelCaseToSnakeCase(key.GetName()));
             }
             foreach (var fk in entity.GetForeignKeys())
             {
-                fk.SetConstraintName(ToSnakeCase(fk.GetConstraintName()));
+                fk.SetConstraintName(CamelCaseToSnakeCase(fk.GetConstraintName()));
             }
             foreach (var index in entity.GetIndexes())
             {
-                index.SetDatabaseName(ToSnakeCase(index.GetDatabaseName()));
+                index.SetDatabaseName(CamelCaseToSnakeCase(index.GetDatabaseName()));
             }
         }
     }
 
-    private static string? ToSnakeCase(string? input)
+    private static string? CamelCaseToSnakeCase(string? input)
     {
         if (string.IsNullOrEmpty(input))
         {
             return input;
         }
 
-        var result = new List<char>();
-        var chars = input.Replace(" ", "").ToCharArray();
+        string result = Regex.Replace(input, @"([a-z0-9])([A-Z])", "$1_$2");
+        result = Regex.Replace(result, @"([A-Z]+)([A-Z][a-z])", "$1_$2");
 
-        foreach (var c in chars)
-        {
-            if (char.IsUpper(c) && (result.Count > 0))
-            {
-                result.Add('_');
-            }
-            result.Add(char.ToLowerInvariant(c));
-        }
-
-        return string.Concat(result);
+        return result.ToLower();
     }
 }
