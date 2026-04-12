@@ -47,6 +47,8 @@ Keeps track of the user's refresh tokens for each active session. Used to check 
 
 Contains user-custom categories for different transactions. Categories may be used by both single transactions and recurring transactions. Unlike types, categories are optional and there are no system-defined categories.
 
+Duplicate names are not allowed among a user's active categories. [Entity Framework's filter constraints](https://learn.microsoft.com/en-us/ef/core/modeling/indexes?tabs=data-annotations#index-filter) is be used to enforce this.
+
 - TransactionCategory
   - Id (int)
   - UserId (int) *(Users/Id)*
@@ -59,7 +61,7 @@ Contains user-custom categories for different transactions. Categories may be us
 
 Contains the types for single transactions. The application comes with a set of default system types while the user may add their own types; user types have a non-null *UserId* value. A transaction type may not be deleted if it's assigned to a transaction. Transaction types are soft deleted to preserve data integrity with deleted transactions.
 
-Duplicate names are not allowed among the system types and a user's active types. [Entity Framework's filter contraints](https://learn.microsoft.com/en-us/ef/core/modeling/indexes?tabs=data-annotations#index-filter) is be used to enforce this.
+Duplicate names are not allowed among the system types and a user's active types. [Entity Framework's filter constraints](https://learn.microsoft.com/en-us/ef/core/modeling/indexes?tabs=data-annotations#index-filter) is be used to enforce this.
 
 - SingleTransactionType
   - Id (int)
@@ -98,7 +100,7 @@ Represents recurring transactions. They include information on how often they oc
 
 Recurring transactions do not have types like single transactions do. The Name field serves as the identifying label for the transaction concept itself (e.g. "Rent" or "Salary"). A type is only relevant for single transactions where categorization for reporting is needed. Essentially, a recurring transaction is a transaction type unto itself.
 
-The field *Period* references a C# enum in the API called *TransactionPeriod*, and is stored as an integer. [Entity Framework's check constraints](https://learn.microsoft.com/en-ca/ef/core/modeling/indexes?tabs=data-annotations#check-constraints) will be used to enforce *Period*'s value.
+The field *Period* references a C# enum in the API called *TransactionPeriod*, and is stored as an integer. [The Enum Type Mapping feature of the Npgsql provider for Entity Framework](https://www.npgsql.org/efcore/mapping/enum.html?tabs=with-connection-string%2Cwith-datasource) will be used to enforce *Period*'s value.
 
 As with *SingleTransaction*, Entity Framework's Precision attribute is be used to enforce the precision of the *Amount* field.
 

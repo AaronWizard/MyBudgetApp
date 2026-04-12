@@ -5,10 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MyBudgetApp.API.Data;
 using MyBudgetApp.API.Models;
+using MyBudgetApp.API.Models.Transactions;
 using MyBudgetApp.API.Services.Access;
 using Scalar.AspNetCore;
 
 const string ConnectionStringKey = "MyBudgetApp";
+const string SystemTransactionTypesKey = "SystemTransactionTypes";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +21,42 @@ var connectionString = builder.Configuration
     ?? throw new InvalidOperationException(
         $"Missing connection string: '{ConnectionStringKey}'"
     );
+
+var systemTransactionTypes = builder.Configuration
+    .GetSection(SystemTransactionTypesKey).Get<string[]>()
+    ?? throw new InvalidOperationException(
+        $"Missing connection string: '{ConnectionStringKey}'"
+    );
+
 builder.Services.AddDbContext<AppDbContext>(
-    options => options.UseNpgsql(connectionString)
+    options => options
+        .UseNpgsql(
+            connectionString,
+            options =>
+                options.MapEnum<RecurringTransaction.PeriodType>("period_type")
+        )
+        .UseSnakeCaseNamingConvention()
+        .UseSeeding((context, _) =>
+        {
+            foreach (var typeName in systemTransactionTypes)
+            {
+                var typeExists = context.Set<SingleTransactionType>().Any(
+                    t => (t.Name == typeName) && string.IsNullOrEmpty(t.UserId)
+                );
+                if (!typeExists)
+                {
+                    context.Set<SingleTransactionType>().Add(
+                        new SingleTransactionType
+                        {
+                            UserId = null,
+                            Name = typeName,
+                            CreateDateUTC = new DateTime(1900, 1, 1)
+                        }
+                    );
+                    context.SaveChanges();
+                }
+            }
+        })
 );
 
 builder.Services.AddIdentityCore<User>()
