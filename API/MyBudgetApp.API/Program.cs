@@ -35,7 +35,6 @@ builder.Services.AddDbContext<AppDbContext>(
             options =>
                 options.MapEnum<RecurringTransaction.PeriodType>("period_type")
         )
-        .UseSnakeCaseNamingConvention()
         .UseSeeding((context, _) =>
         {
             foreach (var typeName in systemTransactionTypes)
