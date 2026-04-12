@@ -44,7 +44,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
             foreach (var property in entity.GetProperties())
             {
-                property.SetColumnName(CamelCaseToSnakeCase(property.GetColumnName()));
+                property.SetColumnName(
+                    CamelCaseToSnakeCase(property.GetColumnName()));
             }
             foreach (var key in entity.GetKeys())
             {
@@ -52,11 +53,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             }
             foreach (var fk in entity.GetForeignKeys())
             {
-                fk.SetConstraintName(CamelCaseToSnakeCase(fk.GetConstraintName()));
+                fk.SetConstraintName(
+                    CamelCaseToSnakeCase(fk.GetConstraintName()));
             }
             foreach (var index in entity.GetIndexes())
             {
-                index.SetDatabaseName(CamelCaseToSnakeCase(index.GetDatabaseName()));
+                index.SetDatabaseName(
+                    CamelCaseToSnakeCase(index.GetDatabaseName()));
             }
         }
     }
