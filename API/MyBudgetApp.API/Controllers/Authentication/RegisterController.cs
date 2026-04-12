@@ -10,6 +10,7 @@ namespace MyBudgetApp.API.Controllers.Authentication
         : ControllerBase
     {
         public record RegisterRequest(string Email, string Password);
+        public record VerifyRequest(string Email, string Token);
 
         [HttpPost]
         public async Task<IActionResult> RegisterAsync(
@@ -19,8 +20,7 @@ namespace MyBudgetApp.API.Controllers.Authentication
                 request.Email);
             if (existingUser != null)
             {
-                // Don't actually create the user.
-                // Return vague response for security.
+                // Vague response for security.
                 return Accepted();
             }
 
@@ -30,20 +30,42 @@ namespace MyBudgetApp.API.Controllers.Authentication
                 CreateDateUTC = DateTime.UtcNow
             };
 
-            var result = await userManager.CreateAsync(user, request.Password);
-            if (!result.Succeeded)
+            var createResult = await userManager.CreateAsync(
+                user, request.Password);
+            if (!createResult.Succeeded)
             {
-                // Return vague response for security.
+                // Vague response for security.
                 return Accepted();
             }
 
+            var emailToken
+                = await userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            // Vague response for security.
             return Accepted();
         }
 
         [HttpPost("verify")]
-        public IActionResult VerifyRegistration()
+        public async Task<IActionResult> VerifyRegistrationAsync(
+            [FromBody] VerifyRequest request)
         {
-            return NotFound();
+            var user = await userManager.FindByEmailAsync(request.Email);
+            if (user is null)
+            {
+                return Unauthorized();
+            }
+            if (await userManager.IsEmailConfirmedAsync(user))
+            {
+                return Unauthorized();
+            }
+            var confirmResult = await userManager.ConfirmEmailAsync(
+                user, request.Token);
+            if (!confirmResult.Succeeded)
+            {
+                return Unauthorized();
+            }
+
+            return Ok();
         }
 
         [HttpPost("verify/resend")]
