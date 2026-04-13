@@ -11,8 +11,8 @@
 
 ## General notes
 
-- Entity Framework Core is used to build and interface with the database.
-- User logins are handled by ASP.NET Core Identity.
+- [Entity Framework Core](https://learn.microsoft.com/en-us/ef/core/) is used to build and interface with the database.
+- User logins are handled by [ASP.NET Core Identity](https://learn.microsoft.com/en-us/aspnet/core/security/authentication/identity?view=aspnetcore-10.0&tabs=net-cli).
 - C# syntax is used in this document. Type names with a "?" represent nullable fields.
 - Many tables have *CreatedDateUTC*, *UpdatedDateUTC*, and *DeletedDateUTC* fields for auditing purposes. Records with a non-null *DeletedDateUTC* field are considered deleted.
 
@@ -22,14 +22,13 @@
 
 Stores the users of the app, who log in and record their transactions. Users log in with an email and password. Registration requires the user to click a link in a confirmation email. Users with a non-null *DeletedDateUTC* field are considered deleted / deactivated. Duplicate emails are not allowed, even with deactivated users.
 
+Based on the [IdentityUser](https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.identity.entityframeworkcore.identityuser?view=aspnetcore-1.1) class from Identity framework.
+
 - User
-  - Id (int)
-  - Email (string)
-  - PasswordHash (string)
-  - EmailConfirmed (bool)
   - CreatedDateUTC (DateTime)
   - UpdatedDateUTC (DateTime?)
   - DeletedDateUTC (DateTime?)
+  - Other fields from IdentityUser
 
 ### RefreshToken
 
@@ -37,7 +36,7 @@ Keeps track of the user's refresh tokens for each active session. Used to check 
 
 - RefreshToken
   - Id (int)
-  - UserId (int) *(Users/Id)*
+  - UserId (string) *(User/Id)*
   - RefreshTokenHash
   - CreatedDateUTC (DateTime)
   - ExpiryDateUTC (DateTime)
@@ -51,7 +50,7 @@ Duplicate names are not allowed among a user's active categories. [Entity Framew
 
 - TransactionCategory
   - Id (int)
-  - UserId (int) *(Users/Id)*
+  - UserId (string) *(User/Id)*
   - Name (string)
   - CreatedDateUTC (DateTime)
   - UpdatedDateUTC (DateTime?)
@@ -65,7 +64,7 @@ Duplicate names are not allowed among the system types and a user's active types
 
 - SingleTransactionType
   - Id (int)
-  - UserId (int?) *(Users/Id)*
+  - UserId (string?) *(User/Id)*
   - Name (string)
   - CreatedDateUTC (DateTime)
   - UpdatedDateUTC (DateTime?)
@@ -85,7 +84,7 @@ Represents single, ad-hoc, non-recurring payments or expenses.
 
 - SingleTransaction
   - Id (int)
-  - UserId (int) *(Users/Id)*
+  - UserId (string) *(User/Id)*
   - TypeId (int) *(SingleTransactionType/Id)*
   - Amount (decimal)
   - TransactionDateUTC (DateTime)
@@ -106,7 +105,7 @@ As with *SingleTransaction*, Entity Framework's Precision attribute is be used t
 
 - RecurringTransaction
   - Id (int)
-  - UserId (int) *(Users/Id)*
+  - UserId (string) *(User/Id)*
   - Name (string)
   - Amount (decimal)
   - Period (TransactionPeriod / int)
