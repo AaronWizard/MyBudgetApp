@@ -49,7 +49,9 @@ builder.Services.AddDbContext<AppDbContext>(
                         {
                             UserId = null,
                             Name = typeName,
-                            CreateDateUTC = new DateTime(1900, 1, 1)
+                            CreateDateUTC = new DateTime(
+                                1900, 1, 1, 0, 0, 0, DateTimeKind.Utc
+                            )
                         }
                     );
                     context.SaveChanges();
