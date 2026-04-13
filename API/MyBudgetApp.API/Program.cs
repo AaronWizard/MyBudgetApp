@@ -16,6 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+#region Database services
+
 var connectionString = builder.Configuration
     .GetConnectionString(ConnectionStringKey)
     ?? throw new InvalidOperationException(
@@ -61,6 +63,10 @@ builder.Services.AddDbContext<AppDbContext>(
         })
 );
 
+#endregion Database services
+
+#region Identity services
+
 builder.Services.AddIdentityCore<User>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders()
@@ -81,6 +87,10 @@ builder.Services.Configure<IdentityOptions>(options =>
 
     options.User.RequireUniqueEmail = true;
 });
+
+#endregion Identity services
+
+#region JWT services
 
 var jwtOptionsSection = builder.Configuration.GetSection(
     JwtAccessOptions.JwtOptionsKey);
@@ -110,6 +120,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddScoped<AccessTokenService>();
+
+#endregion JWT services
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
