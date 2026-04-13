@@ -14,7 +14,7 @@ public class AccessTokenService
     public AccessTokenService(IOptions<JwtAccessOptions> options)
         => _options = options.Value;
 
-    public string GenerateToken(User user)
+    public string GenerateAccessToken(User user)
     {
         var claims = new[]
         {
