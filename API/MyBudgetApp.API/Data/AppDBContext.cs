@@ -2,13 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using MyBudgetApp.API.Models.Transactions;
 using MyBudgetApp.API.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using System.Text.RegularExpressions;
+using MyBudgetApp.API.Models.Access;
 
 namespace MyBudgetApp.API.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options)
     : IdentityDbContext<User>(options)
 {
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
+
     public DbSet<SingleTransaction> SingleTransactions { get; set; }
     public DbSet<RecurringTransaction> RecurringTransactions { get; set; }
 
