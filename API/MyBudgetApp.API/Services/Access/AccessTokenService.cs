@@ -25,7 +25,7 @@ public class AccessTokenService
             )
         };
         var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_options.SecretKey)
+            Encoding.UTF8.GetBytes(_options.SigningKey)
         );
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -33,7 +33,7 @@ public class AccessTokenService
             issuer: _options.Issuer,
             audience: _options.Audience,
             claims: claims,
-            expires: DateTime.Now.AddMinutes(_options.AccessMinutes),
+            expires: DateTime.UtcNow.AddMinutes(_options.AccessMinutes),
             signingCredentials: creds
         );
 
