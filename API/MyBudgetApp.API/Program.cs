@@ -85,6 +85,8 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.AllowedForNewUsers = true;
 
+    options.SignIn.RequireConfirmedEmail = true;
+
     options.User.RequireUniqueEmail = true;
 });
 
@@ -119,9 +121,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddScoped<AccessTokenService>();
-
 #endregion JWT services
+
+builder.Services.Configure<EmailOptions>(
+    builder.Configuration.GetSection(EmailOptions.EmailOptionsKey));
+
+builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<RegistrationService>();
+builder.Services.AddScoped<AccessTokenService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
