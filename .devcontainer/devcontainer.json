@@ -5,7 +5,9 @@
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	"postCreateCommand": "dotnet ef database update --project API/MyBudgetApp.API",
 	"features": {
-		"ghcr.io/devcontainers/features/node:1": {}
+		"ghcr.io/devcontainers-extra/features/angular-cli:2": {
+			"version": "21"
+		}
 	},
 	"forwardPorts": [
 		5000, /* API (ASP.NET Core) */
