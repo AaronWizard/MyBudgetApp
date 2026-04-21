@@ -1,0 +1,27 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start front end",
+            "type": "npm",
+            "script": "start",
+            "isBackground": true,
+            "options": {
+                "cwd": "${workspaceFolder}/frontend/mybudgetapp-frontend"
+            },
+            "problemMatcher": {
+                "owner": "typescript",
+                "pattern": "$tsc",
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": {
+                        "regexp": "Changes detected"
+                    },
+                    "endsPattern": {
+                        "regexp": "bundle generation (complete|failed)"
+                    }
+                }
+            }
+        }
+    ]
+}

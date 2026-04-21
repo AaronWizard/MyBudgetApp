@@ -2,11 +2,29 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "MyBudgetApp.API [http]",
+            "name": "Run API [http]",
             "type": "dotnet",
             "request": "launch",
             "projectPath": "${workspaceFolder}/API/MyBudgetApp.API/MyBudgetApp.API.csproj",
             "launchConfigurationId": "TargetFramework=;http"
+        },
+        {
+            "name": "Run front-end [Chrome]",
+            "type": "chrome",
+            "request": "launch",
+            "webRoot": "${workspaceFolder}/frontend/mybudgetapp-frontend/src",
+            "preLaunchTask": "Start front end",
+            "url": "http://localhost:4200"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Full stack debug",
+            "configurations": [
+                "Run API [http]",
+                "Run front-end [Chrome]"
+            ],
+            "stopAll": true
         }
     ]
 }
