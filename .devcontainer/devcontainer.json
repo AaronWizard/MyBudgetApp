@@ -1,68 +1,87 @@
 {
-	"name": "My Budget App",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "app",
-	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-	"postCreateCommand": "dotnet ef database update --project API/MyBudgetApp.API",
-	"features": {
-		"ghcr.io/devcontainers-extra/features/angular-cli:2": {
-			"version": "21"
-		}
-	},
-	"forwardPorts": [
-		5000, /* API (ASP.NET Core) */
-		4200, /* Front end (Angular) */
-		5432 /* Database (PostgreSQL) */
-	],
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"Angular.ng-template",
-				"DavidAnson.vscode-markdownlint",
-				"docker.docker",
-				"eamodio.gitlens",
-				"ms-dotnettools.csdevkit",
-				"ms-ossdata.vscode-pgsql",
-				"streetsidesoftware.code-spell-checker",
-				"streetsidesoftware.code-spell-checker-canadian-english",
-				"yzhang.markdown-all-in-one"
-			],
-			"settings": {
-				"extensions.autoUpdate": false,
-				"extensions.autoCheckUpdates": false,
-				"cSpell.language": "en-CA",
-				"gitlens.hovers.annotations.over": "annotation",
-				"gitlens.hovers.currentLine.enabled": false,
-				"pgsql.serverGroups": [
-					{
-						"name": "Servers",
-						"id": "DFE79120-1DE3-442D-BB71-37ED6C573EC1",
-						"isDefault": true
-					}
-				],
-				"pgsql.connections": [
-					{
-						"id": "83B7C2CD-F9FF-4966-AD96-C104FDE05514",
-						"groupId": "DFE79120-1DE3-442D-BB71-37ED6C573EC1",
-						"authenticationType": "SqlLogin",
-						"connectTimeout": 15,
-						"applicationName": "My Budget App",
-						"clientEncoding": "utf8",
-						"sslmode": "disable",
-						"sshSavePassword": true,
-						"savePassword": true,
-						"sslRootCertMode": "none",
-						"server": "db",
-						"user": "postgres",
-						"password": "postgres",
-						"database": "appdb",
-						"profileName": "Local DB",
-						"port": "5432",
-						"expiresOn": 0,
-						"sshPassword": ""
-					}
-				]
-			}
-		}
-	}
+  "name": "My Budget App",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "postCreateCommand": "dotnet ef database update --project API/MyBudgetApp.API",
+  "features": {
+    "ghcr.io/devcontainers-extra/features/angular-cli:2": {
+      "version": "21"
+    }
+  },
+  "forwardPorts": [
+    5000 /* API (ASP.NET Core) */, 4200 /* Front end (Angular) */,
+    5432 /* Database (PostgreSQL) */
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Angular.ng-template",
+        "DavidAnson.vscode-markdownlint",
+        "docker.docker",
+        "eamodio.gitlens",
+        "ms-dotnettools.csdevkit",
+        "ms-ossdata.vscode-pgsql",
+        "streetsidesoftware.code-spell-checker",
+        "streetsidesoftware.code-spell-checker-canadian-english",
+        "yzhang.markdown-all-in-one",
+        "esbenp.prettier-vscode"
+      ],
+      "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "[javascript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[html]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[scss]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[css]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[json]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "extensions.autoUpdate": false,
+        "extensions.autoCheckUpdates": false,
+        "cSpell.language": "en-CA",
+        "gitlens.hovers.annotations.over": "annotation",
+        "gitlens.hovers.currentLine.enabled": false,
+        "pgsql.serverGroups": [
+          {
+            "name": "Servers",
+            "id": "DFE79120-1DE3-442D-BB71-37ED6C573EC1",
+            "isDefault": true
+          }
+        ],
+        "pgsql.connections": [
+          {
+            "id": "83B7C2CD-F9FF-4966-AD96-C104FDE05514",
+            "groupId": "DFE79120-1DE3-442D-BB71-37ED6C573EC1",
+            "authenticationType": "SqlLogin",
+            "connectTimeout": 15,
+            "applicationName": "My Budget App",
+            "clientEncoding": "utf8",
+            "sslmode": "disable",
+            "sshSavePassword": true,
+            "savePassword": true,
+            "sslRootCertMode": "none",
+            "server": "db",
+            "user": "postgres",
+            "password": "postgres",
+            "database": "appdb",
+            "profileName": "Local DB",
+            "port": "5432",
+            "expiresOn": 0,
+            "sshPassword": ""
+          }
+        ]
+      }
+    }
+  }
 }

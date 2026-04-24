@@ -6,17 +6,24 @@ import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, MatCard, MatCardHeader, MatCardContent, MatFormField, MatInputModule],
+  imports: [
+    ReactiveFormsModule,
+    MatCard,
+    MatCardHeader,
+    MatCardContent,
+    MatFormField,
+    MatInputModule,
+  ],
   templateUrl: './register.html',
   styleUrl: './register.scss',
 })
 export class Register {
   registerForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required])
+    password: new FormControl('', [Validators.required]),
   });
 
   onSubmit() {
-    console.log("registering")
+    console.log('registering');
   }
 }
