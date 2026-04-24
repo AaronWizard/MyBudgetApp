@@ -1,9 +1,11 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MyBudgetApp.API.Controllers.Authentication
 {
-    [Route("api/password")]
     [ApiController]
+    [ApiVersion(1.0)]
+    [Route("api/password")]
     public class PasswordController : ControllerBase
     {
         [HttpPost("change")]

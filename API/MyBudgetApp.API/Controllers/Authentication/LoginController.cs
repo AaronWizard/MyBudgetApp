@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MyBudgetApp.API.Models;
@@ -5,8 +6,9 @@ using MyBudgetApp.API.Services.Access;
 
 namespace MyBudgetApp.API.Controllers.Authentication
 {
-    [Route("api")]
     [ApiController]
+    [ApiVersion(1.0)]
+    [Route("api")]
     public class LoginController(
         UserManager<User> userManager,
         SignInManager<User> signInManager,

@@ -1,10 +1,11 @@
-using Microsoft.AspNetCore.Http;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MyBudgetApp.API.Controllers.Transactions
 {
-    [Route("api/transaction/recurring")]
     [ApiController]
+    [ApiVersion(1.0)]
+    [Route("api/transaction/recurring")]
     public class RecurringTransactionController : ControllerBase
     {
         [HttpGet("period-type")]

@@ -1,10 +1,11 @@
-using Microsoft.AspNetCore.Http;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MyBudgetApp.API.Controllers.Transactions
 {
-    [Route("api/transaction/average")]
     [ApiController]
+    [ApiVersion(1.0)]
+    [Route("api/transaction/average")]
     public class TransactionAveragesController : ControllerBase
     {
         [HttpGet("by-period")]

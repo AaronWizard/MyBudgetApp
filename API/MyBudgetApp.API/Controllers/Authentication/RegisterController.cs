@@ -1,10 +1,12 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using MyBudgetApp.API.Services.Access;
 
 namespace MyBudgetApp.API.Controllers.Authentication
 {
-    [Route("api/register")]
     [ApiController]
+    [ApiVersion(1.0)]
+    [Route("api/register")]
     public class RegisterController(RegistrationService registrationService)
         : ControllerBase
     {

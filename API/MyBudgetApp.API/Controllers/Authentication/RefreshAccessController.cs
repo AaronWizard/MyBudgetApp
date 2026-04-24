@@ -1,9 +1,11 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MyBudgetApp.API.Controllers.Authentication
 {
-    [Route("api/refresh-access")]
     [ApiController]
+    [ApiVersion(1.0)]
+    [Route("api/refresh-access")]
     public class RefreshAccessController : ControllerBase
     {
         [HttpPost]
