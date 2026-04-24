@@ -1,0 +1,22 @@
+@mixin login-card {
+  mat-card {
+    display: flex;
+    flex-direction: column;
+
+    justify-self: center;
+
+    mat-card-header {
+      align-self: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+
+      button {
+        width: fit-content;
+        align-self: flex-end;
+      }
+    }
+  }
+}
