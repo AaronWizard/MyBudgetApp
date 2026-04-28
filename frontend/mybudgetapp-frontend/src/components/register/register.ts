@@ -32,7 +32,7 @@ export class Register {
   constructor(private passwordService: PasswordService) {}
 
   ngOnInit(): void {
-    this.passwordService.getRequirements().subscribe({
+    this.passwordService.getPasswordRequirements().subscribe({
       next: (requirements) => {
         console.log(requirements);
       },

@@ -13,7 +13,7 @@ export class PasswordService {
 
   private http = inject(HttpClient);
 
-  getRequirements(): Observable<PasswordRequirements> {
+  getPasswordRequirements(): Observable<PasswordRequirements> {
     return this.http.get<PasswordRequirements>(
       environment.apiBaseURL + this.methodPasswordRequirements,
       { headers: baseHeader },
