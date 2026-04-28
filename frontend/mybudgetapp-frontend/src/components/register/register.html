@@ -17,7 +17,7 @@
         <input matInput id="confirm-password" type="password" />
       </mat-form-field>
 
-      <button matButton="elevated">Register</button>
+      <button matButton="elevated" [disabled]="registerForm.invalid">Register</button>
     </form>
 
     <div id="login-link">Already have an account? <a matButton routerLink="/login">Log in</a></div>
