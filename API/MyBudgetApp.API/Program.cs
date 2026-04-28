@@ -68,6 +68,18 @@ builder.Services.AddDbContext<AppDbContext>(
 
 #region Identity services
 
+var passwordRequirementsSection = builder.Configuration.GetSection(
+    PasswordRequirementsOptions.Key);
+
+var passwordRequirements = passwordRequirementsSection
+    .Get<PasswordRequirementsOptions>()
+    ?? throw new InvalidOperationException(
+        $"Missing {PasswordRequirementsOptions.Key} configuration section"
+    );
+
+builder.Services.Configure<PasswordRequirementsOptions>(
+    passwordRequirementsSection);
+
 builder.Services.AddIdentityCore<User>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders()
@@ -75,12 +87,12 @@ builder.Services.AddIdentityCore<User>()
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequiredLength = 8;
-    options.Password.RequiredUniqueChars = 1;
+    options.Password.RequireDigit = passwordRequirements.RequireDigit;
+    options.Password.RequireLowercase = passwordRequirements.RequireLowercase;
+    options.Password.RequireNonAlphanumeric
+        = passwordRequirements.RequireNonAlphanumeric;
+    options.Password.RequireUppercase = passwordRequirements.RequireUppercase;
+    options.Password.RequiredLength = passwordRequirements.RequiredLength;
 
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
     options.Lockout.MaxFailedAccessAttempts = 5;
@@ -96,11 +108,11 @@ builder.Services.Configure<IdentityOptions>(options =>
 #region JWT services
 
 var jwtOptionsSection = builder.Configuration.GetSection(
-    JwtAccessOptions.JwtOptionsKey);
+    JwtAccessOptions.Key);
 
 var jwtOptions = jwtOptionsSection.Get<JwtAccessOptions>()
     ?? throw new InvalidOperationException(
-        $"Missing {JwtAccessOptions.JwtOptionsKey} configuration section"
+        $"Missing {JwtAccessOptions.Key} configuration section"
     );
 
 builder.Services.Configure<JwtAccessOptions>(jwtOptionsSection);
