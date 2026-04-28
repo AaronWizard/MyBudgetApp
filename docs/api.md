@@ -2,6 +2,7 @@
 
 - [General Notes](#general-notes)
 - [Users](#users)
+  - [\[GET\] /user/register/password-requirements](#get-userregisterpassword-requirements)
   - [\[POST\] /user/register](#post-userregister)
   - [\[POST\] /user/register/verify/](#post-userregisterverify)
   - [\[POST\] /user/register/verify/resend](#post-userregisterverifyresend)
@@ -44,6 +45,25 @@
 - Most methods require a JWT bearer access token.
 
 ## Users
+
+### \[GET\] /user/register/password-requirements
+
+Gets the requirements for a user's password.
+
+Path Params: None
+
+Query Params: None
+
+Request: None
+
+Responses:
+
+- OK (200):
+  - requireDigit (bool)
+  - requireLowercase (bool)
+  - requireNonAlphanumeric (bool)
+  - requireUppercase (bool)
+  - requiredLength (int)
 
 ### \[POST\] /user/register
 

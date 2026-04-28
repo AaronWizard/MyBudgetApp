@@ -5,7 +5,7 @@ namespace MyBudgetApp.API.Controllers.Authentication
 {
     [ApiController]
     [ApiVersion(1.0)]
-    [Route("api/refresh-access")]
+    [Route("api/user/refresh-access")]
     public class RefreshAccessController : ControllerBase
     {
         [HttpPost]

@@ -6,14 +6,14 @@ namespace MyBudgetApp.API.Controllers.Authentication
 {
     [ApiController]
     [ApiVersion(1.0)]
-    [Route("api/register")]
+    [Route("api/user/register")]
     public class RegisterController(RegistrationService registrationService)
         : ControllerBase
     {
         public record RegisterRequest(string Email, string Password);
         public record VerifyRequest(string Email, string Token);
 
-        [HttpPost("password-requirements")]
+        [HttpGet("password-requirements")]
         public PasswordRequirementsOptions PasswordRequirements()
         {
             return registrationService.GetPasswordRequirements();

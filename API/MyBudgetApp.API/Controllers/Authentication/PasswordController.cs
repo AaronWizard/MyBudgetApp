@@ -5,7 +5,7 @@ namespace MyBudgetApp.API.Controllers.Authentication
 {
     [ApiController]
     [ApiVersion(1.0)]
-    [Route("api/password")]
+    [Route("api/user/password")]
     public class PasswordController : ControllerBase
     {
         [HttpPost("change")]

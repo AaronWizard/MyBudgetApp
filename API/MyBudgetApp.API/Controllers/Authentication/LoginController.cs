@@ -8,7 +8,7 @@ namespace MyBudgetApp.API.Controllers.Authentication
 {
     [ApiController]
     [ApiVersion(1.0)]
-    [Route("api")]
+    [Route("api/user")]
     public class LoginController(
         UserManager<User> userManager,
         SignInManager<User> signInManager,
