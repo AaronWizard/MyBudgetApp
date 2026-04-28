@@ -13,12 +13,6 @@ namespace MyBudgetApp.API.Controllers.Authentication
         public record RegisterRequest(string Email, string Password);
         public record VerifyRequest(string Email, string Token);
 
-        [HttpGet("password-requirements")]
-        public PasswordRequirementsOptions PasswordRequirements()
-        {
-            return registrationService.GetPasswordRequirements();
-        }
-
         [HttpPost]
         public async Task<IActionResult> RegisterAsync(
             [FromBody] RegisterRequest request)

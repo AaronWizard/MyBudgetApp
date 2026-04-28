@@ -2,17 +2,21 @@
 
 - [General Notes](#general-notes)
 - [Users](#users)
-  - [\[GET\] /user/register/password-requirements](#get-userregisterpassword-requirements)
-  - [\[POST\] /user/register](#post-userregister)
-  - [\[POST\] /user/register/verify/](#post-userregisterverify)
-  - [\[POST\] /user/register/verify/resend](#post-userregisterverifyresend)
-  - [\[POST\] /user/login](#post-userlogin)
-  - [\[POST\] /user/login/verify](#post-userloginverify)
-  - [\[POST\] /user/logout](#post-userlogout)
-  - [\[POST\] /user/password/change](#post-userpasswordchange)
-  - [\[POST\] /user/password/forgot](#post-userpasswordforgot)
-  - [\[POST\] /user/password/reset](#post-userpasswordreset)
-  - [\[POST\] /user/refresh-access](#post-userrefresh-access)
+  - [Registration](#registration)
+    - [\[POST\] /user/register](#post-userregister)
+    - [\[POST\] /user/register/verify/](#post-userregisterverify)
+    - [\[POST\] /user/register/verify/resend](#post-userregisterverifyresend)
+  - [Logins](#logins)
+    - [\[POST\] /user/login](#post-userlogin)
+    - [\[POST\] /user/login/verify](#post-userloginverify)
+    - [\[POST\] /user/logout](#post-userlogout)
+  - [Passwords](#passwords)
+    - [\[GET\] /user/password/requirements](#get-userpasswordrequirements)
+    - [\[POST\] /user/password/change](#post-userpasswordchange)
+    - [\[POST\] /user/password/forgot](#post-userpasswordforgot)
+    - [\[POST\] /user/password/reset](#post-userpasswordreset)
+  - [Access](#access)
+    - [\[POST\] /user/refresh-access](#post-userrefresh-access)
 - [Transaction Categories](#transaction-categories)
   - [\[GET\] /transaction/category](#get-transactioncategory)
   - [\[POST\] /transaction/category](#post-transactioncategory)
@@ -46,26 +50,9 @@
 
 ## Users
 
-### \[GET\] /user/register/password-requirements
+### Registration
 
-Gets the requirements for a user's password.
-
-Path Params: None
-
-Query Params: None
-
-Request: None
-
-Responses:
-
-- OK (200):
-  - requireDigit (bool)
-  - requireLowercase (bool)
-  - requireNonAlphanumeric (bool)
-  - requireUppercase (bool)
-  - requiredLength (int)
-
-### \[POST\] /user/register
+#### \[POST\] /user/register
 
 Register a new user. An email is sent to the provided email address for verification, containing a one-time verification token that lasts for a set amount of time. \
 Response is intentionally vague to avoid revealing whether an email is taken or not.
@@ -85,7 +72,7 @@ Responses:
 
 *Does not require a bearer access token.*
 
-### \[POST\] /user/register/verify/
+#### \[POST\] /user/register/verify/
 
 Verifies a user's registration. Used through a verification link in an email. \
 The user is logged in after a successful registration. The verification may fail if the verification token expired; the user may request a new verification email.
@@ -106,7 +93,7 @@ Responses:
 
 *Does not require a bearer access token.*
 
-### \[POST\] /user/register/verify/resend
+#### \[POST\] /user/register/verify/resend
 
 Requests a new verification email for an unverified user. \
 Response is intentionally vague to avoid revealing if the email exists or is verified.
@@ -125,7 +112,9 @@ Response:
 
 *Does not require a bearer access token.*
 
-### \[POST\] /user/login
+### Logins
+
+#### \[POST\] /user/login
 
 Starts logging in a user. Creates a 2FA code sent to the user's email address, and a login token used by */user/login/verify*.
 
@@ -145,7 +134,7 @@ Responses:
 
 *Does not require a bearer access token.*
 
-### \[POST\] /user/login/verify
+#### \[POST\] /user/login/verify
 
 Completes the 2FA login. Returns an access token, which is the actual bearer access token, and a refresh token.
 
@@ -166,7 +155,7 @@ Responses:
 
 *Does not require a bearer access token.*
 
-### \[POST\] /user/logout
+#### \[POST\] /user/logout
 
 Logs the user out, invalidating their refresh token on the server.
 
@@ -181,7 +170,28 @@ Responses:
 - No Content (204)
 - Unauthorized (401)
 
-### \[POST\] /user/password/change
+### Passwords
+
+#### \[GET\] /user/password/requirements
+
+Gets the requirements for a user's password.
+
+Path Params: None
+
+Query Params: None
+
+Request: None
+
+Responses:
+
+- OK (200):
+  - requireDigit (bool)
+  - requireLowercase (bool)
+  - requireNonAlphanumeric (bool)
+  - requireUppercase (bool)
+  - requiredLength (int)
+
+#### \[POST\] /user/password/change
 
 Changes the (logged in) user's password.
 
@@ -199,7 +209,7 @@ Responses:
 - No Content (204)
 - Unauthorized (401)
 
-### \[POST\] /user/password/forgot
+#### \[POST\] /user/password/forgot
 
 Allows the user to reset their password. A reset link is sent to their email containing a reset token.
 
@@ -217,7 +227,7 @@ Response:
 
 *Does not require a bearer access token.*
 
-### \[POST\] /user/password/reset
+#### \[POST\] /user/password/reset
 
 Completes the password reset process.
 
@@ -237,7 +247,9 @@ Response:
 
 *Does not require a bearer access token.*
 
-### \[POST\] /user/refresh-access
+### Access
+
+#### \[POST\] /user/refresh-access
 
 Refreshes the user's access and refresh tokens using their current refresh token. Periodically called by the front end, e.g. when another API method returns *Unauthorized*.
 

@@ -4,30 +4,14 @@ using MyBudgetApp.API.Models;
 
 namespace MyBudgetApp.API.Services.Access;
 
-public class RegistrationService
+public class RegistrationService(
+    UserManager<User> userManager, EmailService emailService)
 {
-    private readonly PasswordRequirementsOptions _passwordOptions;
-    private readonly UserManager<User> _userManager;
-    private readonly EmailService _emailService;
-
-    public RegistrationService(IOptions<PasswordRequirementsOptions> options,
-        UserManager<User> userManager, EmailService emailService)
-    {
-        _passwordOptions = options.Value;
-        _userManager = userManager;
-        _emailService = emailService;
-    }
-
     const string VerifyEmailSubject = "[My Budget App] Verify Your Account";
-
-    public PasswordRequirementsOptions GetPasswordRequirements()
-    {
-        return _passwordOptions;
-    }
 
     public async Task<bool> RegisterUserAsync(string email, string password)
     {
-        var existingUser = await _userManager.FindByEmailAsync(email);
+        var existingUser = await userManager.FindByEmailAsync(email);
         if (existingUser != null)
         {
             return false;
@@ -39,7 +23,7 @@ public class RegistrationService
             Email = email,
             CreateDateUTC = DateTime.UtcNow
         };
-        var createResult = await _userManager.CreateAsync(user, password);
+        var createResult = await userManager.CreateAsync(user, password);
         if (!createResult.Succeeded)
         {
             return false;
@@ -47,9 +31,9 @@ public class RegistrationService
 
         // Send registration email
         var emailToken
-            = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            = await userManager.GenerateEmailConfirmationTokenAsync(user);
 
-        await _emailService.SendEmailAsync(
+        await emailService.SendEmailAsync(
             email, VerifyEmailSubject,
             $"Verify your account with the token '{emailToken}'"
         );
@@ -59,17 +43,17 @@ public class RegistrationService
 
     public async Task<bool> VerifyRegistrationAsync(string email, string token)
     {
-        var user = await _userManager.FindByEmailAsync(email);
+        var user = await userManager.FindByEmailAsync(email);
         if (user is null)
         {
             return false;
         }
-        if (await _userManager.IsEmailConfirmedAsync(user))
+        if (await userManager.IsEmailConfirmedAsync(user))
         {
             return false;
         }
 
-        var confirmResult = await _userManager.ConfirmEmailAsync(user, token);
+        var confirmResult = await userManager.ConfirmEmailAsync(user, token);
         if (!confirmResult.Succeeded)
         {
             return false;

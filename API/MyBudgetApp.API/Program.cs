@@ -141,6 +141,7 @@ builder.Services.Configure<EmailOptions>(
 
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<RegistrationService>();
+builder.Services.AddScoped<PasswordService>();
 builder.Services.AddScoped<AccessTokenService>();
 
 builder.Services.AddControllers();
