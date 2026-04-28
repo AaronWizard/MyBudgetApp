@@ -1,4 +1,6 @@
-export const environment = {
+import { EnvironmentData } from '../interfaces/environment-data';
+
+export const environment: EnvironmentData = {
   production: false,
   apiBaseURL: 'http://localhost:5000/api/',
 
