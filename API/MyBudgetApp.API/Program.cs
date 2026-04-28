@@ -13,6 +13,11 @@ using Scalar.AspNetCore;
 const string ConnectionStringKey = "MyBudgetApp";
 const string SystemTransactionTypesKey = "SystemTransactionTypes";
 
+const string AllowedOriginsPolicy = "AllowedOrigins";
+const string AllowedOriginsKey = "AllowedOrigins";
+
+const string APIVersionHeaderField = "x-api-version";
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -28,7 +33,7 @@ var connectionString = builder.Configuration
 var systemTransactionTypes = builder.Configuration
     .GetSection(SystemTransactionTypesKey).Get<string[]>()
     ?? throw new InvalidOperationException(
-        $"Missing connection string: '{ConnectionStringKey}'"
+        $"Missing config setting: '{SystemTransactionTypesKey}'"
     );
 
 builder.Services.AddDbContext<AppDbContext>(
@@ -136,6 +141,27 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 #endregion JWT services
 
+#region CORS
+
+var allowedOrigins = builder.Configuration
+    .GetSection(AllowedOriginsKey).Get<string[]>()
+    ?? throw new InvalidOperationException(
+        $"Missing config setting: '{AllowedOriginsKey}'"
+    );
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        name: AllowedOriginsPolicy,
+        policy => policy.WithOrigins(allowedOrigins)
+            .WithHeaders([APIVersionHeaderField])
+    );
+});
+
+#endregion CORS
+
+#region Other Services
+
 builder.Services.Configure<EmailOptions>(
     builder.Configuration.GetSection(EmailOptions.EmailOptionsKey));
 
@@ -144,13 +170,16 @@ builder.Services.AddScoped<RegistrationService>();
 builder.Services.AddScoped<PasswordService>();
 builder.Services.AddScoped<AccessTokenService>();
 
+#endregion Other Services
+
 builder.Services.AddControllers();
 builder.Services.AddApiVersioning(options =>
 {
     options.AssumeDefaultVersionWhenUnspecified = true;
     options.DefaultApiVersion = new ApiVersion(1.0);
     options.ReportApiVersions = true;
-    options.ApiVersionReader = new HeaderApiVersionReader("x-api-version");
+    options.ApiVersionReader = new HeaderApiVersionReader(
+        APIVersionHeaderField);
 })
 .AddMvc()
 .AddApiExplorer(options =>
@@ -174,6 +203,7 @@ else
     app.UseHttpsRedirection();
 }
 
+app.UseCors(AllowedOriginsPolicy);
 app.UseAuthentication();
 app.UseAuthorization();
 
