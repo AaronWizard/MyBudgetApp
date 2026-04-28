@@ -8,8 +8,8 @@ import { baseHeader } from './data/api-version-header';
   providedIn: 'root',
 })
 export class RegistrationService {
-  private readonly methodRegister = 'register';
-  private readonly methodVerify = 'register/verify';
+  private readonly methodRegister = 'user/register';
+  private readonly methodVerify = 'user/register/verify';
 
   private http = inject(HttpClient);
 
@@ -19,7 +19,7 @@ export class RegistrationService {
 
   verify(token: string) {
     const params = new HttpParams().set;
-    this.http.post(`${environment.apiBaseURL}${this.methodVerify}${token}`, null, {
+    this.http.post(`${environment.apiBaseURL}${this.methodVerify}/${token}`, null, {
       headers: baseHeader,
     });
   }
