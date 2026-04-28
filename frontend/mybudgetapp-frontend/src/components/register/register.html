@@ -1,6 +1,9 @@
 <mat-card>
   <mat-card-header><h2>Register</h2></mat-card-header>
   <mat-card-content>
+    @if (loadError()) {
+      <div id="load-error">An error loading the form occurred.</div>
+    }
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <mat-form-field>
         <mat-label for="email">Email</mat-label>

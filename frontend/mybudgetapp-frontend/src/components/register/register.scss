@@ -7,4 +7,12 @@
     justify-self: center;
     padding-top: 1em;
   }
+
+  #load-error {
+    padding: 0.5em;
+    margin-bottom: 1em;
+    border-radius: 0.5em;
+    background: var(--mat-sys-error-container);
+    color: var(--mat-sys-on-error-container);
+  }
 }
