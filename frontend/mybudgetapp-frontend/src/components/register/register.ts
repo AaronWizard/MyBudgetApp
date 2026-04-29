@@ -52,8 +52,8 @@ export class Register {
   ngOnInit(): void {
     this.passwordService.getPasswordRequirements().subscribe({
       next: (requirements) => {
-        this.registerForm.get('password')?.addValidators(passwordValidator(requirements));
-        this.registerForm.updateValueAndValidity();
+        this.registerForm.controls.password.addValidators(passwordValidator(requirements));
+        this.registerForm.controls.password.updateValueAndValidity();
         this.successfullyLoaded.set(true);
       },
       error: (_) => {
@@ -64,6 +64,6 @@ export class Register {
   }
 
   onSubmit() {
-    console.log('registering');
+    console.log(this.registerForm.value);
   }
 }

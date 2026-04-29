@@ -3,16 +3,22 @@
 :host {
   @include logins.login-card;
 
-  #login-link {
+  .login-link {
     justify-self: center;
     padding-top: 1em;
   }
 
-  #load-error {
+  .load-error {
     padding: 0.5em;
     margin-bottom: 1em;
     border-radius: 0.5em;
     background: var(--mat-sys-error-container);
     color: var(--mat-sys-on-error-container);
+  }
+
+  .validation-error {
+    font-size: var(--mat-sys-body-small-size);
+    padding-left: 16px;
+    padding-right: 16px;
   }
 }
