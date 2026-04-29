@@ -1,4 +1,4 @@
-namespace MyBudgetApp.API.Services.Access;
+namespace MyBudgetApp.API.Options;
 
 public class JwtAccessOptions
 {

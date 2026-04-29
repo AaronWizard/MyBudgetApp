@@ -1,8 +1,8 @@
-namespace MyBudgetApp.API.Services.Access;
+namespace MyBudgetApp.API.Options;
 
 public class EmailOptions
 {
-    public const string EmailOptionsKey = "Email";
+    public const string Key = "Email";
 
     public required string FromName { get; set; }
     public required string FromEmail { get; set; }

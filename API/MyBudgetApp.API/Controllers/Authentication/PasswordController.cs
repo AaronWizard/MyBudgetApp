@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
+using MyBudgetApp.API.Options;
 using MyBudgetApp.API.Services.Access;
 
 namespace MyBudgetApp.API.Controllers.Authentication

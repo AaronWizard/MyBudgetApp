@@ -1,6 +1,7 @@
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using MyBudgetApp.API.Options;
 
 namespace MyBudgetApp.API.Services.Access;
 

@@ -7,13 +7,31 @@ using Microsoft.IdentityModel.Tokens;
 using MyBudgetApp.API.Data;
 using MyBudgetApp.API.Models;
 using MyBudgetApp.API.Models.Transactions;
+using MyBudgetApp.API.Options;
 using MyBudgetApp.API.Services.Access;
 using Scalar.AspNetCore;
+
+void ConfigureOptions<T>(WebApplicationBuilder builder, string key)
+    where T : class
+{
+    builder.Services.Configure<T>(builder.Configuration.GetSection(key));
+}
+
+T ConfigureAndGetOptions<T>(WebApplicationBuilder builder, string key)
+    where T : class
+{
+    var optionsSection = builder.Configuration.GetSection(key);
+    var options = optionsSection.Get<T>()
+        ?? throw new InvalidOperationException(
+            $"Missing {key} configuration section"
+        );
+    builder.Services.Configure<T>(optionsSection);
+    return options;
+}
 
 const string ConnectionStringKey = "MyBudgetApp";
 const string SystemTransactionTypesKey = "SystemTransactionTypes";
 
-const string AllowedOriginsKey = "AllowedOrigins";
 const string AllowedOriginsPolicy = "AllowedOrigins";
 
 const string ContentTypeHeaderField = "content-type";
@@ -22,6 +40,10 @@ const string APIVersionHeaderField = "x-api-version";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+// Used for both emails and CORS.
+var frontEndOptions = ConfigureAndGetOptions<FrontEndOptions>(
+    builder, FrontEndOptions.Key);
 
 #region Database services
 
@@ -74,17 +96,8 @@ builder.Services.AddDbContext<AppDbContext>(
 
 #region Identity services
 
-var passwordRequirementsSection = builder.Configuration.GetSection(
-    PasswordRequirementsOptions.Key);
-
-var passwordRequirements = passwordRequirementsSection
-    .Get<PasswordRequirementsOptions>()
-    ?? throw new InvalidOperationException(
-        $"Missing {PasswordRequirementsOptions.Key} configuration section"
-    );
-
-builder.Services.Configure<PasswordRequirementsOptions>(
-    passwordRequirementsSection);
+var passwordRequirements = ConfigureAndGetOptions<PasswordRequirementsOptions>(
+    builder, PasswordRequirementsOptions.Key);
 
 builder.Services.AddIdentityCore<User>()
     .AddEntityFrameworkStores<AppDbContext>()
@@ -113,15 +126,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 #region JWT services
 
-var jwtOptionsSection = builder.Configuration.GetSection(
-    JwtAccessOptions.Key);
-
-var jwtOptions = jwtOptionsSection.Get<JwtAccessOptions>()
-    ?? throw new InvalidOperationException(
-        $"Missing {JwtAccessOptions.Key} configuration section"
-    );
-
-builder.Services.Configure<JwtAccessOptions>(jwtOptionsSection);
+var jwtOptions = ConfigureAndGetOptions<JwtAccessOptions>(
+    builder, JwtAccessOptions.Key);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -144,17 +150,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 #region CORS
 
-var allowedOrigins = builder.Configuration
-    .GetSection(AllowedOriginsKey).Get<string[]>()
-    ?? throw new InvalidOperationException(
-        $"Missing config setting: '{AllowedOriginsKey}'"
-    );
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(
         name: AllowedOriginsPolicy,
-        policy => policy.WithOrigins(allowedOrigins)
+        policy => policy.WithOrigins([frontEndOptions.Url])
             .WithHeaders([APIVersionHeaderField, ContentTypeHeaderField])
     );
 });
@@ -163,8 +163,7 @@ builder.Services.AddCors(options =>
 
 #region Other Services
 
-builder.Services.Configure<EmailOptions>(
-    builder.Configuration.GetSection(EmailOptions.EmailOptionsKey));
+ConfigureOptions<EmailOptions>(builder, EmailOptions.Key);
 
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<RegistrationService>();

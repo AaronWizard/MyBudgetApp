@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MyBudgetApp.API.Models;
+using MyBudgetApp.API.Options;
 
 namespace MyBudgetApp.API.Services.Access;
 

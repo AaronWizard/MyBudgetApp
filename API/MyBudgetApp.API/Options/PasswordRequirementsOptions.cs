@@ -1,6 +1,4 @@
-using System;
-
-namespace MyBudgetApp.API.Services.Access;
+namespace MyBudgetApp.API.Options;
 
 public class PasswordRequirementsOptions
 {
