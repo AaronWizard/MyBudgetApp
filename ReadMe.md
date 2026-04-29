@@ -7,7 +7,7 @@ A web application for keeping track of income and expenses, to demonstrate full 
 
 ## Development testing
 
-Use the following URLs for development testing:
+Use the following URLs for development testing when the development environment is running:
 
 - API: <http://localhost:5000/scalar/>
 - Front-end: <http://localhost:4200/>
