@@ -48,6 +48,8 @@ export class Register {
   );
 
   successfullyLoaded = signal(false);
+  problemRegisteringOccurred = signal(false);
+  registrationSent = signal(false);
 
   ngOnInit(): void {
     this.passwordService.getPasswordRequirements().subscribe({
@@ -64,6 +66,17 @@ export class Register {
   }
 
   onSubmit() {
-    console.log(this.registerForm.value);
+    const email = this.registerForm.value.email ?? '';
+    const password = this.registerForm.value.password ?? '';
+
+    if (email && password) {
+      this.registrationService.register(email, password).subscribe((success) => {
+        this.registrationSent.set(success);
+        this.problemRegisteringOccurred.set(!success);
+      });
+    } else {
+      console.error('Email and password are empty');
+      this.problemRegisteringOccurred.set(true);
+    }
   }
 }

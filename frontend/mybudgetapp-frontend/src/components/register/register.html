@@ -1,75 +1,84 @@
 <mat-card>
   <mat-card-header><h2>Register</h2></mat-card-header>
   <mat-card-content>
-    @if (!successfullyLoaded()) {
-      <div class="load-error">An error loading the form occurred.</div>
+    @if (registrationSent()) {
+      Registration sent. Verification email will be sent to
+      <strong>{{ registerForm.value.email }}</strong
+      >.
+    } @else {
+      @if (!successfullyLoaded()) {
+        <div class="load-error">An error loading the form occurred.</div>
+      }
+      @if (problemRegisteringOccurred()) {
+        <div class="load-error">An error occurred while registering.</div>
+      }
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <mat-form-field>
+          <mat-label for="email">Email</mat-label>
+          <input matInput id="email" type="email" formControlName="email" />
+          @if (registerForm.controls.email.invalid) {
+            <mat-error>A valid email is required.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label for="password">Password</mat-label>
+          <input matInput id="password" type="password" formControlName="password" />
+          @if (registerForm.controls.password.hasError('required')) {
+            <mat-error>A password is required.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label for="confirm-password">Confirm Password</mat-label>
+          <input matInput id="confirm-password" type="password" formControlName="confirmPassword" />
+          @if (registerForm.controls.confirmPassword.hasError('required')) {
+            <mat-error>Please confirm your password.</mat-error>
+          }
+        </mat-form-field>
+
+        @if (!registerForm.controls.password.hasError('required')) {
+          <div class="validation-error">
+            @if (registerForm.controls.password.hasError('requiredLength')) {
+              <mat-error
+                >Password must be at least
+                {{ registerForm.controls.password.getError('requiredLength') }} characters
+                long.</mat-error
+              >
+            }
+            @if (registerForm.controls.password.hasError('requireDigit')) {
+              <mat-error>Password must have a number.</mat-error>
+            }
+            @if (registerForm.controls.password.hasError('requireLowercase')) {
+              <mat-error>Password must have a lower case letter.</mat-error>
+            }
+            @if (registerForm.controls.password.hasError('requireUppercase')) {
+              <mat-error>Password must have an upper case letter.</mat-error>
+            }
+            @if (registerForm.controls.password.hasError('requireNonAlphanumeric')) {
+              <mat-error>Password must have a non-letter and non-number character.</mat-error>
+            }
+          </div>
+        }
+
+        @if (
+          !registerForm.controls.confirmPassword.hasError('required') &&
+          registerForm.hasError('nomatch')
+        ) {
+          <div class="validation-error">
+            <mat-error>Passwords do not match.</mat-error>
+          </div>
+        }
+
+        <button matButton="elevated" [disabled]="!successfullyLoaded() || registerForm.invalid">
+          Register
+        </button>
+      </form>
+
+      <div class="login-link">
+        Already have an account? <a matButton routerLink="/login">Log in</a>
+      </div>
     }
-
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <mat-form-field>
-        <mat-label for="email">Email</mat-label>
-        <input matInput id="email" type="email" formControlName="email" />
-        @if (registerForm.controls.email.invalid) {
-          <mat-error>A valid email is required.</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label for="password">Password</mat-label>
-        <input matInput id="password" type="password" formControlName="password" />
-        @if (registerForm.controls.password.hasError('required')) {
-          <mat-error>A password is required.</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field>
-        <mat-label for="confirm-password">Confirm Password</mat-label>
-        <input matInput id="confirm-password" type="password" formControlName="confirmPassword" />
-        @if (registerForm.controls.confirmPassword.hasError('required')) {
-          <mat-error>Please confirm your password.</mat-error>
-        }
-      </mat-form-field>
-
-      @if (!registerForm.controls.password.hasError('required')) {
-        <div class="validation-error">
-          @if (registerForm.controls.password.hasError('requiredLength')) {
-            <mat-error
-              >Password must be at least
-              {{ registerForm.controls.password.getError('requiredLength') }} characters
-              long.</mat-error
-            >
-          }
-          @if (registerForm.controls.password.hasError('requireDigit')) {
-            <mat-error>Password must have a number.</mat-error>
-          }
-          @if (registerForm.controls.password.hasError('requireLowercase')) {
-            <mat-error>Password must have a lower case letter.</mat-error>
-          }
-          @if (registerForm.controls.password.hasError('requireUppercase')) {
-            <mat-error>Password must have an upper case letter.</mat-error>
-          }
-          @if (registerForm.controls.password.hasError('requireNonAlphanumeric')) {
-            <mat-error>Password must have a non-letter and non-number character.</mat-error>
-          }
-        </div>
-      }
-
-      @if (
-        !registerForm.controls.confirmPassword.hasError('required') &&
-        registerForm.hasError('nomatch')
-      ) {
-        <div class="validation-error">
-          <mat-error>Passwords do not match.</mat-error>
-        </div>
-      }
-
-      <button matButton="elevated" [disabled]="!successfullyLoaded() || registerForm.invalid">
-        Register
-      </button>
-    </form>
-
-    <div class="login-link">
-      Already have an account? <a matButton routerLink="/login">Log in</a>
-    </div>
   </mat-card-content>
 </mat-card>
