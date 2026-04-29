@@ -13,9 +13,10 @@ using Scalar.AspNetCore;
 const string ConnectionStringKey = "MyBudgetApp";
 const string SystemTransactionTypesKey = "SystemTransactionTypes";
 
-const string AllowedOriginsPolicy = "AllowedOrigins";
 const string AllowedOriginsKey = "AllowedOrigins";
+const string AllowedOriginsPolicy = "AllowedOrigins";
 
+const string ContentTypeHeaderField = "content-type";
 const string APIVersionHeaderField = "x-api-version";
 
 var builder = WebApplication.CreateBuilder(args);
@@ -154,7 +155,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(
         name: AllowedOriginsPolicy,
         policy => policy.WithOrigins(allowedOrigins)
-            .WithHeaders([APIVersionHeaderField])
+            .WithHeaders([APIVersionHeaderField, ContentTypeHeaderField])
     );
 });
 
@@ -173,6 +174,9 @@ builder.Services.AddScoped<AccessTokenService>();
 #endregion Other Services
 
 builder.Services.AddControllers();
+
+#region Versioning
+
 builder.Services.AddApiVersioning(options =>
 {
     options.AssumeDefaultVersionWhenUnspecified = true;
@@ -186,6 +190,8 @@ builder.Services.AddApiVersioning(options =>
 {
     options.GroupNameFormat = "'v'V";
 });
+
+#endregion Versioning
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
