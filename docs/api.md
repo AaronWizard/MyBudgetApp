@@ -55,7 +55,7 @@
 #### \[POST\] /user/register
 
 Register a new user. An email is sent to the provided email address for verification, containing a one-time verification token that lasts for a set amount of time. \
-Response is intentionally vague to avoid revealing whether an email is taken or not.
+Response is intentionally vague to avoid revealing whether an email is taken or not. Errors are only reported when the email or password are invalid.
 
 Path Params: None
 
@@ -69,6 +69,9 @@ Request:
 Responses:
 
 - Accepted (202)
+- Bad Request (400)
+  - InvalidEmail (bool)
+  - PasswordErrors (string[])
 
 *Does not require a bearer access token.*
 
@@ -77,13 +80,14 @@ Responses:
 Verifies a user's registration. Used through a verification link in an email. \
 The user is logged in after a successful registration. The verification may fail if the verification token expired; the user may request a new verification email.
 
-Path Params:
-
-- RegistrationToken (string)
+Path Params: None
 
 Query Params: None
 
 Request: None
+
+- UserId (int)
+- RegistrationToken (string)
 
 Responses:
 

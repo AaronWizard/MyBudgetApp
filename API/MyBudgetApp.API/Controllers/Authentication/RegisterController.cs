@@ -10,30 +10,53 @@ namespace MyBudgetApp.API.Controllers.Authentication
     public class RegisterController(RegistrationService registrationService)
         : ControllerBase
     {
-        public record RegisterRequest(string Email, string Password);
-        public record VerifyRequest(string Email, string Token);
+        public record RegistrationRequest(string Email, string Password);
+        public record RegistrationErrorResponse(
+            bool InvalidEmail, string[] PasswordErrors
+        );
+
+        public record VerifyRequest(string UserId, string Token);
 
         [HttpPost]
         public async Task<IActionResult> RegisterAsync(
-            [FromBody] RegisterRequest request)
+            [FromBody] RegistrationRequest request)
         {
-            await registrationService.RegisterUserAsync(
-                request.Email, request.Password);
-            // Vague response for security.
-            return Accepted();
+            var verificationResult = await registrationService
+                .RegisterUserAsync(request.Email, request.Password);
+
+            // Only report invalid emails and passwords for security.
+            if (verificationResult.InvalidEmail
+                || verificationResult.InvalidPassword)
+            {
+                return BadRequest(
+                    new RegistrationErrorResponse(
+                        verificationResult.InvalidEmail,
+                        verificationResult.PasswordErrors.ToArray()
+                    )
+                );
+            }
+            else
+            {
+                return Accepted();
+            }
         }
 
         [HttpPost("verify")]
         public async Task<IActionResult> VerifyRegistrationAsync(
             [FromBody] VerifyRequest request)
         {
-            var verificationSucceeded = await registrationService
-                .VerifyRegistrationAsync(request.Email, request.Token);
-            if (!verificationSucceeded)
+            var verificationResult = await registrationService
+                .VerifyRegistrationAsync(request.UserId, request.Token);
+
+            if (verificationResult
+                == RegistrationService.ConfirmationResult.Success)
             {
-                return Unauthorized();
+                return Ok();
             }
-            return Ok();
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPost("verify/resend")]
