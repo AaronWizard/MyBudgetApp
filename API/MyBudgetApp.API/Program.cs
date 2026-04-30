@@ -154,7 +154,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(
         name: AllowedOriginsPolicy,
-        policy => policy.WithOrigins([frontEndOptions.Url])
+        policy => policy.WithOrigins([frontEndOptions.BaseUrl])
             .WithHeaders([APIVersionHeaderField, ContentTypeHeaderField])
     );
 });

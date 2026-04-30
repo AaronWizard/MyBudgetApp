@@ -27,6 +27,10 @@
   <ItemGroup>
     <Folder Include="Models/Access/" />
     <Folder Include="Models/Transactions/" />
+
+    <Content Include="Templates/**/*.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

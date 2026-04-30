@@ -9,14 +9,23 @@ namespace MyBudgetApp.API.Services.Access;
 
 public class RegistrationService
 {
-    const string VerifyEmailSubject = "[My Budget App] Verify Your Account";
+    private static class VerifyEmailConstants
+    {
+        public const string Subject = "My Budget App - Verify Your Account";
+
+        public const string Template = "verify-email-template.html";
+        public const string UrlToken = "{url}";
+        public const string PathToken = "{path}";
+        public const string TokenToken = "{token}";
+    }
 
     private readonly UserManager<User> _userManager;
     private readonly EmailService _emailService;
     private readonly FrontEndOptions _frontEndOptions;
 
     public RegistrationService(
-        UserManager<User> userManager, EmailService emailService,
+        UserManager<User> userManager,
+        EmailService emailService,
         IOptions<FrontEndOptions> frontEndOptions)
     {
         _userManager = userManager;
@@ -51,9 +60,10 @@ public class RegistrationService
         var encodedToken = WebEncoders.Base64UrlEncode(
             Encoding.UTF8.GetBytes(registrationToken));
 
+        var htmlBody = await GetRegistrationHTMLBodyAsync(encodedToken);
+
         await _emailService.SendEmailAsync(
-            email, VerifyEmailSubject,
-            $"Verify your account: {_frontEndOptions.Url}/{encodedToken}"
+            email, VerifyEmailConstants.Subject, htmlBody
         );
 
         return true;
@@ -83,5 +93,19 @@ public class RegistrationService
         }
 
         return true;
+    }
+
+    private async Task<string> GetRegistrationHTMLBodyAsync(string token)
+    {
+        string htmlBody = await _emailService.GetEmailBodyFromTemplateAsync(
+            VerifyEmailConstants.Template);
+        htmlBody = htmlBody
+            .Replace(VerifyEmailConstants.UrlToken, _frontEndOptions.BaseUrl)
+            .Replace(
+                VerifyEmailConstants.PathToken,
+                _frontEndOptions.VerifyRegistrationPath
+            )
+            .Replace(VerifyEmailConstants.TokenToken, token);
+        return htmlBody;
     }
 }
