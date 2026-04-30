@@ -89,6 +89,7 @@ Responses:
 
 - OK (200)
   - AccessToken (string)
+  - RefreshToken (string)
 - Bad Request (400)
 
 *Does not require a bearer access token.*
