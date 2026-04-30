@@ -37,7 +37,7 @@ public class RegistrationService
         }
     }
 
-    public enum ConfirmationResult
+    public enum VerificationResult
     {
         Success,
         UserNotFound,
@@ -125,17 +125,17 @@ public class RegistrationService
         return new RegistrationResult();
     }
 
-    public async Task<ConfirmationResult> VerifyRegistrationAsync(
+    public async Task<VerificationResult> VerifyRegistrationAsync(
         string userId, string encodedToken)
     {
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null)
         {
-            return ConfirmationResult.UserNotFound;
+            return VerificationResult.UserNotFound;
         }
         if (await _userManager.IsEmailConfirmedAsync(user))
         {
-            return ConfirmationResult.AlreadyVerified;
+            return VerificationResult.AlreadyVerified;
         }
 
         var registrationToken = Encoding.UTF8.GetString(
@@ -147,15 +147,15 @@ public class RegistrationService
         {
             if (confirmResult.Errors.Any(e => e.Code == "InvalidToken"))
             {
-                return ConfirmationResult.InvalidToken;
+                return VerificationResult.InvalidToken;
             }
             else
             {
-                return ConfirmationResult.OtherError;
+                return VerificationResult.OtherError;
             }
         }
 
-        return ConfirmationResult.Success;
+        return VerificationResult.Success;
     }
 
     private async Task<string> GetRegistrationHTMLBodyAsync(

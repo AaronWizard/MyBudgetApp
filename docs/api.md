@@ -78,7 +78,8 @@ Responses:
 #### \[POST\] /user/register/verify/
 
 Verifies a user's registration. Used through a verification link in an email. \
-The user is logged in after a successful registration. The verification may fail if the verification token expired; the user may request a new verification email.
+The user is logged in after a successful registration. \
+Errors are reported if the user was not found, the user is already verified, the token is invalid, or there was another server error.
 
 Path Params: None
 
@@ -94,7 +95,10 @@ Responses:
 - OK (200)
   - AccessToken (string)
   - RefreshToken (string)
+- Not Found (404)
+- Conflict (409)
 - Bad Request (400)
+- Internal Server Error (500)
 
 *Does not require a bearer access token.*
 

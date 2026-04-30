@@ -48,15 +48,27 @@ namespace MyBudgetApp.API.Controllers.Authentication
             var verificationResult = await registrationService
                 .VerifyRegistrationAsync(request.UserId, request.Token);
 
-            if (verificationResult
-                == RegistrationService.ConfirmationResult.Success)
+            IActionResult result;
+            switch (verificationResult)
             {
-                return Ok();
+                case RegistrationService.VerificationResult.Success:
+                    result = Ok();
+                    break;
+                case RegistrationService.VerificationResult.UserNotFound:
+                    result = NotFound();
+                    break;
+                case RegistrationService.VerificationResult.AlreadyVerified:
+                    result = Conflict();
+                    break;
+                case RegistrationService.VerificationResult.InvalidToken:
+                    result = BadRequest();
+                    break;
+                default:
+                    result = StatusCode(
+                        StatusCodes.Status500InternalServerError);
+                    break;
             }
-            else
-            {
-                return BadRequest();
-            }
+            return result;
         }
 
         [HttpPost("verify/resend")]
