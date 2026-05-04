@@ -1,11 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import {
-  AbstractControl,
-  FormBuilder,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -16,6 +10,7 @@ import { PasswordService } from '../../services/password-service';
 import { RegistrationService } from '../../services/registration-service';
 import { confirmPasswordValidator } from '../../validators/confirm-password-validator';
 import { passwordValidator } from '../../validators/password-validator';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -47,22 +42,30 @@ export class Register {
     },
   );
 
+  loading = signal(true);
+
   successfullyLoaded = signal(false);
   problemRegisteringOccurred = signal(false);
   registrationSent = signal(false);
 
   ngOnInit(): void {
-    this.passwordService.getPasswordRequirements().subscribe({
-      next: (requirements) => {
-        this.registerForm.controls.password.addValidators(passwordValidator(requirements));
-        this.registerForm.controls.password.updateValueAndValidity();
-        this.successfullyLoaded.set(true);
-      },
-      error: (_) => {
-        console.error('Error loading password requirements');
-        this.successfullyLoaded.set(false);
-      },
-    });
+    this.loading.set(true);
+    this.passwordService
+      .getPasswordRequirements()
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: (requirements) => {
+          this.registerForm.controls.password.addValidators(passwordValidator(requirements));
+          this.registerForm.controls.password.updateValueAndValidity();
+
+          this.loading.set(false);
+          this.successfullyLoaded.set(true);
+        },
+        error: (_) => {
+          console.error('Error loading password requirements');
+          this.successfullyLoaded.set(false);
+        },
+      });
   }
 
   onSubmit() {
@@ -70,13 +73,19 @@ export class Register {
     const password = this.registerForm.value.password ?? '';
 
     if (email && password) {
-      this.registrationService.register(email, password).subscribe((result) => {
-        this.registrationSent.set(result.success);
-        this.problemRegisteringOccurred.set(!result.success);
-        if (!result.success) {
-          console.error(`Error occurred while registering: ${result}`);
-        }
-      });
+      this.loading.set(true);
+      this.registrationService
+        .register(email, password)
+        .pipe(finalize(() => this.loading.set(false)))
+        .subscribe({
+          next: (result) => {
+            this.registrationSent.set(result.success);
+            this.problemRegisteringOccurred.set(!result.success);
+            if (!result.success) {
+              console.error(`Error occurred while registering: ${result}`);
+            }
+          },
+        });
     } else {
       console.error('Email and password are empty');
       this.problemRegisteringOccurred.set(true);

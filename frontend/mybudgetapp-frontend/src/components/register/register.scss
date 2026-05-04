@@ -8,6 +8,14 @@
     padding-top: 1em;
   }
 
+  .loading {
+    padding: 0.5em;
+    margin-bottom: 1em;
+    border-radius: 0.5em;
+    background: var(--mat-sys-secondary);
+    color: var(--mat-sys-on-secondary);
+  }
+
   .load-error {
     padding: 0.5em;
     margin-bottom: 1em;
