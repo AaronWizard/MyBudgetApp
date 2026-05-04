@@ -3,7 +3,7 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-  "postCreateCommand": "dotnet ef database update --project API/MyBudgetApp.API",
+  "postCreateCommand": "bash .devcontainer/setup.sh",
   "features": {
     "ghcr.io/devcontainers-extra/features/angular-cli:2": {
       "version": "21"
@@ -13,6 +13,9 @@
     5000 /* API (ASP.NET Core) */, 4200 /* Front end (Angular) */,
     5432 /* Database (PostgreSQL) */
   ],
+  "remoteEnv": {
+    "NG_CLI_ANALYTICS": "false"
+  },
   "customizations": {
     "vscode": {
       "extensions": [
