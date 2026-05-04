@@ -70,9 +70,12 @@ export class Register {
     const password = this.registerForm.value.password ?? '';
 
     if (email && password) {
-      this.registrationService.register(email, password).subscribe((success) => {
-        this.registrationSent.set(success);
-        this.problemRegisteringOccurred.set(!success);
+      this.registrationService.register(email, password).subscribe((result) => {
+        this.registrationSent.set(result.success);
+        this.problemRegisteringOccurred.set(!result.success);
+        if (!result.success) {
+          console.error(`Error occurred while registering: ${result}`);
+        }
       });
     } else {
       console.error('Email and password are empty');
