@@ -24,14 +24,20 @@ namespace MyBudgetApp.API.Controllers.Authentication
             var verificationResult = await registrationService
                 .RegisterUserAsync(request.Email, request.Password);
 
+            var invalidEmail
+                = (verificationResult.Type
+                    == RegistrationService.RegistrationResultType.InvalidEmail)
+                || (verificationResult.Type
+                    == RegistrationService.RegistrationResultType
+                        .InvalidEmailAndPassword);
+
             // Only report invalid emails and passwords for security.
-            if (verificationResult.InvalidEmail
-                || verificationResult.InvalidPassword)
+            if (invalidEmail || verificationResult.PasswordErrors.Any())
             {
                 return BadRequest(
                     new RegistrationErrorResponse(
-                        verificationResult.InvalidEmail,
-                        verificationResult.PasswordErrors.ToArray()
+                        invalidEmail,
+                        verificationResult.PasswordErrors
                     )
                 );
             }
@@ -51,16 +57,16 @@ namespace MyBudgetApp.API.Controllers.Authentication
             IActionResult result;
             switch (verificationResult)
             {
-                case RegistrationService.VerificationResult.Success:
+                case RegistrationService.VerificationResultType.Success:
                     result = Ok();
                     break;
-                case RegistrationService.VerificationResult.UserNotFound:
+                case RegistrationService.VerificationResultType.UserNotFound:
                     result = NotFound();
                     break;
-                case RegistrationService.VerificationResult.AlreadyVerified:
+                case RegistrationService.VerificationResultType.AlreadyVerified:
                     result = Conflict();
                     break;
-                case RegistrationService.VerificationResult.InvalidToken:
+                case RegistrationService.VerificationResultType.InvalidToken:
                     result = BadRequest();
                     break;
                 default:

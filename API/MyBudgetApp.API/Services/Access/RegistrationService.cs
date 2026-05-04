@@ -9,35 +9,20 @@ namespace MyBudgetApp.API.Services.Access;
 
 public class RegistrationService
 {
-    public class RegistrationResult
+    public enum RegistrationResultType
     {
-        public bool UserAlreadyExists { get; set; } = false;
-        public bool InvalidEmail { get; set; } = false;
-        public IEnumerable<string> PasswordErrors { get; set; }
-            = Array.Empty<string>();
-        public bool OtherError { get; set; } = false;
-
-        public bool InvalidPassword
-        {
-            get
-            {
-                return PasswordErrors.Any();
-            }
-        }
-
-        public bool IsSuccess
-        {
-            get
-            {
-                return !UserAlreadyExists
-                    && !InvalidEmail
-                    && !InvalidPassword
-                    && !OtherError;
-            }
-        }
+        Succeeded,
+        UserAlreadyExists,
+        InvalidEmail,
+        InvalidPassword,
+        InvalidEmailAndPassword,
+        OtherError
     }
 
-    public enum VerificationResult
+    public record RegistrationResult(
+        RegistrationResultType Type, string[] PasswordErrors);
+
+    public enum VerificationResultType
     {
         Success,
         UserNotFound,
@@ -77,10 +62,9 @@ public class RegistrationService
         var existingUser = await _userManager.FindByEmailAsync(email);
         if (existingUser != null)
         {
-            return new RegistrationResult
-            {
-                UserAlreadyExists = true
-            };
+            return new RegistrationResult(
+                RegistrationResultType.UserAlreadyExists, Array.Empty<string>()
+            );
         }
 
         var user = new User
@@ -92,20 +76,28 @@ public class RegistrationService
         var createResult = await _userManager.CreateAsync(user, password);
         if (!createResult.Succeeded)
         {
-            return new RegistrationResult
-            {
-                InvalidEmail = createResult.Errors.Any(
-                    e => e.Code == "InvalidEmail"
-                ),
-                PasswordErrors = createResult.Errors
-                    .Where(e => e.Code.StartsWith("Password"))
-                    .Select(e => e.Description),
+            var invalidEmail = createResult.Errors.Any(
+                e => e.Code == "InvalidEmail"
+            );
+            var passwordErrors = createResult.Errors
+                .Where(e => e.Code.StartsWith("Password"))
+                .Select(e => e.Description);
 
-                OtherError = createResult.Errors.Any(e =>
-                    (e.Code != "InvalidEmail")
-                    && !e.Code.StartsWith("Password")
-                )
-            };
+            var type = RegistrationResultType.OtherError;
+            if (invalidEmail && passwordErrors.Any())
+            {
+                type = RegistrationResultType.InvalidEmailAndPassword;
+            }
+            else if (invalidEmail)
+            {
+                type = RegistrationResultType.InvalidEmail;
+            }
+            else if (passwordErrors.Any())
+            {
+                type = RegistrationResultType.InvalidPassword;
+            }
+
+            return new RegistrationResult(type, passwordErrors.ToArray());
         }
 
         // Send registration email
@@ -122,20 +114,21 @@ public class RegistrationService
             email, VerifyEmailConstants.Subject, htmlBody
         );
 
-        return new RegistrationResult();
+        return new RegistrationResult(
+            RegistrationResultType.Succeeded, Array.Empty<string>());
     }
 
-    public async Task<VerificationResult> VerifyRegistrationAsync(
+    public async Task<VerificationResultType> VerifyRegistrationAsync(
         string userId, string encodedToken)
     {
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null)
         {
-            return VerificationResult.UserNotFound;
+            return VerificationResultType.UserNotFound;
         }
         if (await _userManager.IsEmailConfirmedAsync(user))
         {
-            return VerificationResult.AlreadyVerified;
+            return VerificationResultType.AlreadyVerified;
         }
 
         var registrationToken = Encoding.UTF8.GetString(
@@ -147,15 +140,15 @@ public class RegistrationService
         {
             if (confirmResult.Errors.Any(e => e.Code == "InvalidToken"))
             {
-                return VerificationResult.InvalidToken;
+                return VerificationResultType.InvalidToken;
             }
             else
             {
-                return VerificationResult.OtherError;
+                return VerificationResultType.OtherError;
             }
         }
 
-        return VerificationResult.Success;
+        return VerificationResultType.Success;
     }
 
     private async Task<string> GetRegistrationHTMLBodyAsync(
