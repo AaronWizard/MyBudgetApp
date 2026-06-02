@@ -14,7 +14,7 @@ export const routes: Routes = [
     component: Login,
   },
   {
-    path: 'register/verify/:token',
+    path: 'register/verify',
     component: VerifyRegistration,
   },
   {

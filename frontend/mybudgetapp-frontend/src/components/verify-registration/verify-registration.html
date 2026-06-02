@@ -1,7 +1,22 @@
 <div>
-  @if (loading()) {
-    Loading.
-  } @else {
-    Your account is now activated.
+  @switch (state()) {
+    @case (State.loading) {
+      Loading
+    }
+    @case (VerifyRegistrationResponse.success) {
+      Your account is confirmed.
+    }
+    @case (VerifyRegistrationResponse.notFound) {
+      You do not have an account. <a routerLink="/register">Register here.</a>
+    }
+    @case (VerifyRegistrationResponse.alreadyVerified) {
+      Your account is already verified. <a routerLink="/login">Log in here.</a>
+    }
+    @case (VerifyRegistrationResponse.invalidToken) {
+      Your verification link is no longer valid. <a>Request a new link.</a>
+    }
+    @default {
+      An unexpected error occurred. Please try again later.
+    }
   }
 </div>
