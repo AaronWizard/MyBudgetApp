@@ -1,9 +1,11 @@
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MyBudgetApp.API.Controllers.Transactions
 {
     [ApiController]
+    [Authorize]
     [ApiVersion(1.0)]
     [Route("api/transaction/recurring")]
     public class RecurringTransactionController : ControllerBase
