@@ -11,6 +11,8 @@ using MyBudgetApp.API.Options;
 using MyBudgetApp.API.Services.Access;
 using Scalar.AspNetCore;
 
+#region Helper methods
+
 void ConfigureOptions<T>(WebApplicationBuilder builder, string key)
     where T : class
 {
@@ -29,6 +31,10 @@ T ConfigureAndGetOptions<T>(WebApplicationBuilder builder, string key)
     return options;
 }
 
+#endregion Helper methods
+
+#region Constants
+
 const string ConnectionStringKey = "MyBudgetApp";
 const string SystemTransactionTypesKey = "SystemTransactionTypes";
 
@@ -36,6 +42,8 @@ const string AllowedOriginsPolicy = "AllowedOrigins";
 
 const string ContentTypeHeaderField = "content-type";
 const string APIVersionHeaderField = "x-api-version";
+
+#endregion Constants
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,7 +53,7 @@ var builder = WebApplication.CreateBuilder(args);
 var frontEndOptions = ConfigureAndGetOptions<FrontEndOptions>(
     builder, FrontEndOptions.Key);
 
-#region Database services
+#region Database
 
 var connectionString = builder.Configuration
     .GetConnectionString(ConnectionStringKey)
@@ -92,9 +100,9 @@ builder.Services.AddDbContext<AppDbContext>(
         })
 );
 
-#endregion Database services
+#endregion Database
 
-#region Identity services
+#region Identity
 
 var passwordRequirements = ConfigureAndGetOptions<PasswordRequirementsOptions>(
     builder, PasswordRequirementsOptions.Key);
@@ -122,9 +130,9 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = true;
 });
 
-#endregion Identity services
+#endregion Identity
 
-#region JWT services
+#region JWT
 
 var jwtOptions = ConfigureAndGetOptions<JwtAccessOptions>(
     builder, JwtAccessOptions.Key);
@@ -146,7 +154,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-#endregion JWT services
+#endregion JWT
 
 #region CORS
 
@@ -160,19 +168,6 @@ builder.Services.AddCors(options =>
 });
 
 #endregion CORS
-
-#region Other Services
-
-ConfigureOptions<EmailOptions>(builder, EmailOptions.Key);
-
-builder.Services.AddScoped<EmailService>();
-builder.Services.AddScoped<RegistrationService>();
-builder.Services.AddScoped<PasswordService>();
-builder.Services.AddScoped<AccessTokenService>();
-
-#endregion Other Services
-
-builder.Services.AddControllers();
 
 #region Versioning
 
@@ -191,6 +186,19 @@ builder.Services.AddApiVersioning(options =>
 });
 
 #endregion Versioning
+
+#region Other Services
+
+ConfigureOptions<EmailOptions>(builder, EmailOptions.Key);
+
+builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<RegistrationService>();
+builder.Services.AddScoped<PasswordService>();
+builder.Services.AddScoped<AccessTokenService>();
+
+#endregion Other Services
+
+builder.Services.AddControllers();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
